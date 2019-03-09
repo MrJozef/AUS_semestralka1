@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "semestralka1", "semestralka1\semestralka1.vcxproj", "{B5608A6B-79D0-4B8B-B2B2-95784925450B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Debug|x64.ActiveCfg = Debug|x64
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Debug|x64.Build.0 = Debug|x64
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Debug|x86.ActiveCfg = Debug|Win32
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Debug|x86.Build.0 = Debug|Win32
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Release|x64.ActiveCfg = Release|x64
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Release|x64.Build.0 = Release|x64
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Release|x86.ActiveCfg = Release|Win32
+		{B5608A6B-79D0-4B8B-B2B2-95784925450B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {550010A1-2863-49A2-8B4C-4058939C45FC}
+	EndGlobalSection
+EndGlobal
