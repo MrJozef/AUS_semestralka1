@@ -75,7 +75,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <DisableSpecificWarnings>4100; 4634; 4400</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
