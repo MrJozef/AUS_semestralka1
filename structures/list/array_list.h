@@ -4,7 +4,6 @@
 #include "../structure_iterator.h"
 #include "../array/array.h"
 
-//TODO vymenit tento ArrayList za svoj tohtorocny
 namespace structures
 {
 
@@ -142,15 +141,15 @@ namespace structures
 
 	template<typename T>
 	inline ArrayList<T>::ArrayList() :
-		List<T>(),
-		array_(new Array<T>(10)),
+		List(),
+		array_(new Array<T>(4)),
 		size_(0)
 	{
 	}
 
 	template<typename T>
 	inline ArrayList<T>::ArrayList(const ArrayList<T>& other) :
-		List<T>(),
+		List(),
 		array_(new Array<T>(*other.array_)),
 		size_(other.size_)
 	{
@@ -201,12 +200,15 @@ namespace structures
 	template<typename T>
 	inline T & ArrayList<T>::operator[](const int index)
 	{
+		//pole toto osetrenie ma, ale iba v ramci svojej velkosti a velkost pola != velkost listu
+		DSRoutines::rangeCheckExcept(index, size_, "Index out of range in ArrayList");
 		return (*array_)[index];
 	}
 
 	template<typename T>
 	inline const T ArrayList<T>::operator[](const int index) const
 	{
+		DSRoutines::rangeCheckExcept(index, size_, "Index out of range in ArrayList");
 		return (*array_)[index];
 	}
 
@@ -217,24 +219,23 @@ namespace structures
 		{
 			enlarge();
 		}
-		(*array_)[static_cast<int>(size_++)] = data;
+		(*array_)[static_cast<int>(size_++)] = data; //size nie je int preto ho musim pretypovat
 	}
 
 	template<typename T>
 	inline void ArrayList<T>::insert(const T & data, const int index)
 	{
 		if (index == static_cast<int>(size_))
-		{
 			add(data);
-		}
 		else
 		{
-			DSRoutines::rangeCheckExcept(index, size_, "Index out of range");
+			DSRoutines::rangeCheckExcept(index, size_, "Index out of range in ArrayList");
 
 			if (array_->size() == size_)
 			{
 				enlarge();
 			}
+			//tu static_cast byt nemusi, kedze index uz je int
 			Array<T>::copy(*array_, static_cast<int>(index), *array_, static_cast<int>(index + 1), static_cast<int>(size_ - index));
 			(*array_)[index] = data;
 			size_++;
@@ -281,15 +282,18 @@ namespace structures
 	template<typename T>
 	inline void ArrayList<T>::clear()
 	{
+		//nas nemusi zaujimat co sa v poli nachadza za prvky, lebo viem ze pocet platnych je 0 a ak nieco pridam tak prepisem
 		size_ = 0;
 	}
 
+	//ukazuje na prvy platny prvok
 	template<typename T>
 	inline Iterator<T>* ArrayList<T>::getBeginIterator() const
 	{
 		return new ArrayListIterator(this, 0);
 	}
 
+	//ukazuje na prvy NEplatny prvok kvoli porovnaniu !=; prvy neplatny je na indexe size
 	template<typename T>
 	inline Iterator<T>* ArrayList<T>::getEndIterator() const
 	{
@@ -299,12 +303,13 @@ namespace structures
 	template<typename T>
 	inline void ArrayList<T>::enlarge()
 	{
-		Array<T>* newArray = new Array<T>(size_ + 10);
+		Array<T>* newArray = new Array<T>(2 * size_);
 		Array<T>::copy(*array_, 0, *newArray, 0, static_cast<int>(size_));
 		delete array_;
 		array_ = newArray;
 	}
 
+	//kazda struktura ma vlastny iterator, preto konkretny iterator pre konkretnu strukturu je vnoreny
 	template<typename T>
 	inline ArrayList<T>::ArrayListIterator::ArrayListIterator(const ArrayList<T>* arrayList, int position) :
 		arrayList_(arrayList),
@@ -316,9 +321,11 @@ namespace structures
 	inline ArrayList<T>::ArrayListIterator::~ArrayListIterator()
 	{
 		arrayList_ = nullptr;
-		position_ = 0;
+		position_ = -1;
 	}
 
+
+	//toto su operacie, ktore vedia vsetky iteratory
 	template<typename T>
 	inline Iterator<T>& ArrayList<T>::ArrayListIterator::operator=(const Iterator<T>& other)
 	{
@@ -344,4 +351,5 @@ namespace structures
 		position_++;
 		return *this;
 	}
+
 }

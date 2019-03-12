@@ -1,33 +1,39 @@
 #include <iostream>
 #include "../structures/heap_monitor.h" 
 #include "const.h"
+#include "datum.h"
 
 using namespace std;
 
 int nacitajInt(int poCislo);
-void Zadavam();
+void zadavam();
 
 int main()
 {
 	initHeapMonitor();
 
+	Datum* aktualny_cas = new Datum();
+
 	bool pokracovat = true;
 	while (pokracovat)
 	{
 		cout << "1. semestralna praca - Jozef Kubik\n\n";
-		cout << "Menu:\n  0) Koniec\n\n" << endl;
+		cout << "Aktualny cas: " + aktualny_cas->toString() + "\n\n";
+		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Pridaj nove vozidlo\n  3) Vypis zoznam vozidiel\n  0) Koniec\n\n" << endl;
 
 		switch(nacitajInt(POCET_POLOZIEK_MENU))
 		{
 		case 1:
-			//todo prva moznost
+			aktualny_cas->dalsiaHodina();
 			break;
+		case 2:
+			break;
+
 		case 0:
 		default:
-			cout << "\n\n\nKoniec programu - stlacte <Enter> pre ukoncenie" << endl;
 			pokracovat = false;
+			cout << "\n\n\nKoniec programu - stlacte <Enter> pre ukoncenie" << endl;
 		}
-
 	}
 	
 	cin.get();
@@ -39,14 +45,14 @@ int nacitajInt(int poCislo)
 {
 	char cislo;
 	cout << "Zadajte cislo od 0 po " + to_string(poCislo) + ":" << endl;
-	Zadavam();
+	zadavam();
 	cin >> cislo;
 	cin.ignore(1000, '\n');
 
 	while (!((cislo - ASCII_CISLO_CISLICA) <= poCislo && (cislo - ASCII_CISLO_CISLICA) >= 0))
 	{
 		cout << "Zly vstup! Zadajte cislo od 0 po " + to_string(poCislo) + ":" << endl;
-		Zadavam();
+		zadavam();
 		cin.get(cislo);
 		cin.ignore(1000, '\n');
 	}
@@ -54,4 +60,4 @@ int nacitajInt(int poCislo)
 	return cislo - ASCII_CISLO_CISLICA;
 }
 
-void Zadavam() { cout << ">> "; }
+void zadavam() { cout << ">> "; }

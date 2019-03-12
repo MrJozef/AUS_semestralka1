@@ -69,5 +69,8 @@
     <ClInclude Include="const.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="datum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

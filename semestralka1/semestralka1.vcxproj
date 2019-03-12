@@ -133,6 +133,7 @@
     <ClInclude Include="..\structures\structure_iterator.h" />
     <ClInclude Include="..\structures\vector\vector.h" />
     <ClInclude Include="const.h" />
+    <ClInclude Include="datum.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
