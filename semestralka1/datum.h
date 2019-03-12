@@ -14,13 +14,14 @@ private:
 
 public:
 	Datum();
+	Datum(fstream* inSubor);
 	Datum(int den, int hodina);
-	Datum(int den, int hodina, bool moznostMenit);
 	~Datum();
 
 	string toString();
-	string toSubor();
+	void toSubor(fstream* outSubor);
 	bool dalsiaHodina();
+	void fromSubor(fstream* subor);
 };
 
 ///<summary>Tento kostruktor sa pouziva pri spusteni projektu pre aktualny cas, kt. bude dalej "plynut"</summary>
@@ -31,20 +32,18 @@ inline Datum::Datum()
 	menitelny_ = true;
 }
 
+///<summary>Konstruktor pouzivany pri nacitavani zo suboru</summary>
+inline Datum::Datum(fstream * inSubor)
+{
+	fromSubor(inSubor);
+}
+
 ///<summary>Tento konstruktor pouzivame pre vsetky ostatne objekty, ktore si maju uchovavat staticky cas</summary>
 inline Datum::Datum(int den, int hodina)
 {
 	den_ = den;
 	hodina_ = hodina;
 	menitelny_ = false;
-}
-
-///<summary>Konstruktor pouzivany pri nacitavani so suboru</summary>
-inline Datum::Datum(int den, int hodina, bool moznostMenit)
-{
-	den_ = den;
-	hodina_ = hodina;
-	menitelny_ = moznostMenit;
 }
 
 inline Datum::~Datum()
@@ -56,10 +55,19 @@ inline string Datum::toString()
 	return to_string(den_) + ". den " + to_string(hodina_) + ":00";
 }
 
-inline string Datum::toSubor()
+inline void Datum::toSubor(fstream* outSubor)
 {
-	return to_string(den_) + "\n" + to_string(hodina_) + "\n" + to_string(menitelny_) + "\n";
+	*outSubor << den_ << "\n" << hodina_ << "\n" << menitelny_ << "\n";
 }
+
+///<summary>Metoda pouzivana konstruktorom pri nacitavani zo suboru a pri nacitavani aktualny_cas (vtedy je volana priamo)</summary>
+inline void Datum::fromSubor(fstream* subor)
+{
+	*subor >> den_;
+	*subor >> hodina_;
+	*subor >> menitelny_;
+}
+
 
 //todo vo vypise napisat ze tento datum sa menit nemoze ak to bude potrebne
 inline bool Datum::dalsiaHodina()

@@ -4,7 +4,8 @@
 
 const int ASCII_CISLO_CISLICA = 48;			//rozdiel medzi cislicou v ascii (char) a cislom, ktore predstavuje (int)
 
-const int POCET_POLOZIEK_MENU = 2;
+const int POCET_POLOZIEK_MENU = 3;
+const std::string CESTA_K_SUBORU = "data.txt";
 
 const int ZACIATOCNA_HOD_DNA = 7;
 const int KONECNA_HOD_DNA = 21;
