@@ -1,8 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include "../structures/heap_monitor.h" 
-#include "const.h"
+#include "../structures/list/array_list.h"
 #include "datum.h"
+#include "vozidlo.h"
 
 using namespace std;
 
@@ -14,15 +15,18 @@ int main()
 	initHeapMonitor();
 
 	Datum* aktualny_cas = new Datum();
-
 	fstream* subor = new fstream;
 
+	structures::ArrayList<Vozidlo*>* listVozidiel = new structures::ArrayList<Vozidlo*>();
+
+	string pom = "";
 	bool pokracovat = true;
 	while (pokracovat)
 	{
 		cout << "1. semestralna praca - Jozef Kubik\n\n";
 		cout << "Aktualny cas: " + aktualny_cas->toString() + "\n\n";
-		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Nacitaj data zo suboru\n  3) Uloz aktualny stav do suboru\n  0) Koniec\n\n" << endl;
+		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Nacitaj data zo suboru\n  3) Uloz aktualny stav do suboru" << endl;
+		cout << "  4) Pridaj vozidlo\n  5) Vypis vsetky vozidla\n  0) Koniec\n\n" << endl;
 
 		switch(nacitajInt(POCET_POLOZIEK_MENU))
 		{
@@ -36,6 +40,13 @@ int main()
 			if ((*subor).is_open())
 			{
 				aktualny_cas->fromSubor(subor);
+
+				int pocVoz;
+				*subor >> pocVoz;
+				for (int i = 0; i < pocVoz; i++)
+				{
+					listVozidiel->add(new Vozidlo(subor));
+				}
 
 				(*subor).close();
 				cout << "Data boli uspesne nacitane!" << endl;
@@ -52,6 +63,11 @@ int main()
 			if ((*subor).is_open())
 			{
 				aktualny_cas->toSubor(subor);
+				*subor << listVozidiel->size() << "\n";
+				for (Vozidlo* voz : *listVozidiel)
+				{
+					voz->toSubor(subor);
+				}
 
 				(*subor).close();
 				cout << "Data boli uspesne ulozene do suboru!" << endl;
@@ -62,13 +78,56 @@ int main()
 			}
 			break;
 
+		case 4://todo osetrit nacitavanie udajov pre vozidla
+			int nosnost;
+			double nakladyNaRegion;
+
+			cout << "Zadajte SPZ noveho vozidla:" << endl;
+			zadavam();
+			cin >> pom;
+			cout << "Zadajte nosnost vozidla (v tonach):" << endl;
+			zadavam();
+			cin >> nosnost;
+			cout << "Zadajte naklady na prevadzku (v Eurach na region):" << endl;
+			zadavam();
+			cin >> nakladyNaRegion;
+
+			listVozidiel->add(new Vozidlo(pom, nosnost, nakladyNaRegion, aktualny_cas));
+			break;
+
+		case 5:
+			cout << "Zoznam vsetkych vozidiel firmy:\n" << endl;
+
+			if (listVozidiel->size() == 0)
+			{
+				cout << "  -  Aktualne firma nema ziadne vozidla  -\n" << endl;
+			}
+			else
+			{
+				for (Vozidlo* voz : *listVozidiel)
+				{
+					cout << voz->toString();
+				}
+			}
+			
+			break;
+
 		case 0:
 		default:
 			pokracovat = false;
 			cout << "\n\n\nKoniec programu - stlacte <Enter> pre ukoncenie" << endl;
 		}
 	}
-	
+
+	delete aktualny_cas;
+	delete subor;
+
+	for(Vozidlo* voz : *listVozidiel)
+	{
+		delete voz;
+	}
+	delete listVozidiel;
+
 	cin.get();
 	return 0;
 }

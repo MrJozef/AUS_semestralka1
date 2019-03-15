@@ -21,7 +21,10 @@ public:
 	string toString();
 	void toSubor(fstream* outSubor);
 	bool dalsiaHodina();
-	void fromSubor(fstream* subor);
+	void fromSubor(fstream* inSubor);
+
+	int dajDen();
+	int dajHodinu();
 };
 
 ///<summary>Tento kostruktor sa pouziva pri spusteni projektu pre aktualny cas, kt. bude dalej "plynut"</summary>
@@ -52,7 +55,7 @@ inline Datum::~Datum()
 
 inline string Datum::toString()
 {
-	return to_string(den_) + ". den " + to_string(hodina_) + ":00";
+	return to_string(den_) + ". den " + to_string(hodina_) + ":00\n";
 }
 
 inline void Datum::toSubor(fstream* outSubor)
@@ -61,11 +64,11 @@ inline void Datum::toSubor(fstream* outSubor)
 }
 
 ///<summary>Metoda pouzivana konstruktorom pri nacitavani zo suboru a pri nacitavani aktualny_cas (vtedy je volana priamo)</summary>
-inline void Datum::fromSubor(fstream* subor)
+inline void Datum::fromSubor(fstream* inSubor)
 {
-	*subor >> den_;
-	*subor >> hodina_;
-	*subor >> menitelny_;
+	*inSubor >> den_;
+	*inSubor >> hodina_;
+	*inSubor >> menitelny_;
 }
 
 
@@ -84,4 +87,14 @@ inline bool Datum::dalsiaHodina()
 		hodina_++;
 
 	return true;
+}
+
+inline int Datum::dajDen()
+{
+	return den_;
+}
+
+inline int Datum::dajHodinu()
+{
+	return hodina_;
 }

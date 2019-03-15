@@ -120,6 +120,7 @@
     <ClCompile Include="..\structures\structure.cpp" />
     <ClCompile Include="..\structures\vector\vector.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vozidlo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\structures\array\array.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="..\structures\vector\vector.h" />
     <ClInclude Include="const.h" />
     <ClInclude Include="datum.h" />
+    <ClInclude Include="vozidlo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
