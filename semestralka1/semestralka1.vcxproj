@@ -119,6 +119,7 @@
     <ClCompile Include="..\structures\ds_routines.cpp" />
     <ClCompile Include="..\structures\structure.cpp" />
     <ClCompile Include="..\structures\vector\vector.cpp" />
+    <ClCompile Include="dron.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="vozidlo.cpp" />
   </ItemGroup>
@@ -135,6 +136,7 @@
     <ClInclude Include="..\structures\vector\vector.h" />
     <ClInclude Include="const.h" />
     <ClInclude Include="datum.h" />
+    <ClInclude Include="dron.h" />
     <ClInclude Include="vozidlo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -4,11 +4,13 @@
 #include "../structures/list/array_list.h"
 #include "datum.h"
 #include "vozidlo.h"
+#include "dron.h";
 
 using namespace std;
 
 int nacitajInt(int poCislo);
 void zadavam();
+void zadavamEnter();
 
 int main()
 {
@@ -23,10 +25,12 @@ int main()
 	bool pokracovat = true;
 	while (pokracovat)
 	{
+		system("cls");				//todo  toto odstranit?
 		cout << "1. semestralna praca - Jozef Kubik\n\n";
 		cout << "Aktualny cas: " + aktualny_cas->toString() + "\n\n";
 		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Nacitaj data zo suboru\n  3) Uloz aktualny stav do suboru" << endl;
-		cout << "  4) Pridaj vozidlo\n  5) Vypis vsetky vozidla\n  0) Koniec\n\n" << endl;
+		cout << "  4) Pridaj vozidlo\n  5) Vypis vsetky vozidla\n  6) Pridaj dron\n  7) Vypis drony z daneho prekladiska" << endl;
+		cout << "  0) Koniec\n\n" << endl;
 
 		switch(nacitajInt(POCET_POLOZIEK_MENU))
 		{
@@ -55,6 +59,7 @@ int main()
 			{
 				cout << "Nastala chyba, nie je mozne otvorit subor s ulozenymi datami!" << endl;
 			}
+			zadavamEnter();
 			break;
 			
 		case 3:
@@ -76,6 +81,7 @@ int main()
 			{
 				cout << "Nastala chyba, nie je mozne pripravit subor na zapis dat!" << endl;
 			}
+			zadavamEnter();
 			break;
 
 		case 4://todo osetrit nacitavanie udajov pre vozidla
@@ -93,6 +99,7 @@ int main()
 			cin >> nakladyNaRegion;
 
 			listVozidiel->add(new Vozidlo(pom, nosnost, nakladyNaRegion, aktualny_cas));
+			zadavamEnter();
 			break;
 
 		case 5:
@@ -109,7 +116,7 @@ int main()
 					cout << voz->toString();
 				}
 			}
-			
+			zadavamEnter();
 			break;
 
 		case 0:
@@ -153,3 +160,5 @@ int nacitajInt(int poCislo)
 }
 
 void zadavam() { cout << ">> "; }
+
+void zadavamEnter() { cout << "Pre pokracovanie stlacte <Enter>\n"; cin.ignore(); zadavam(); }

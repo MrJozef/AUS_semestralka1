@@ -37,6 +37,9 @@
     <ClCompile Include="vozidlo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\structures\heap_monitor.h">
@@ -76,6 +79,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vozidlo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -29,19 +29,14 @@ string Vozidlo::toString()
 
 void Vozidlo::toSubor(fstream* outSubor)
 {
-	*outSubor << zarDoEvidencie_->dajDen() << "\n" << zarDoEvidencie_->dajHodinu() << "\n" << SPZ_ << "\n" << nosnost_ << "\n";
-	*outSubor << nakladyNaReg_ << "\n" << celkNaklady_ << "\n";
+	zarDoEvidencie_->toSubor(outSubor);
+	*outSubor  << SPZ_ << "\n" << nosnost_ << "\n" << nakladyNaReg_ << "\n" << celkNaklady_ << "\n";
 }
 
 void Vozidlo::fromSubor(fstream* inSubor)
 {
-	int den;
-	int hodina;
 
-	*inSubor >> den;
-	*inSubor >> hodina;
-
-	zarDoEvidencie_ = new Datum(den, hodina);
+	zarDoEvidencie_ = new Datum(inSubor);
 	*inSubor >> SPZ_;
 	*inSubor >> nosnost_;
 	*inSubor >> nakladyNaReg_;

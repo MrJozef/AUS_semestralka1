@@ -21,10 +21,58 @@ const int DRON_2_RYCHLOST = 40;
 const int DRON_2_DOBA_LETU = 60;
 const int DRON_2_NABITIE_10_PERC_BATERIE = 5;
 
-enum TypDronu
+
+inline int dajNosnostDronu(int typDronu)
 {
-	typ1, typ2
-};
+	switch(typDronu)
+	{
+	case 1:
+		return DRON_1_MAX_NOSNOST;
+	case 2:
+		return DRON_2_MAX_NOSNOST;
+	default:
+		return 0;
+	}
+}
+
+inline int dajRychlostDronu(int typDronu)
+{
+	switch (typDronu)
+	{
+	case 1:
+		return DRON_1_RYCHLOST;
+	case 2:
+		return DRON_2_RYCHLOST;
+	default:
+		return 0;
+	}
+}
+
+inline int dajDobuLetuDronu(int typDronu)
+{
+	switch (typDronu)
+	{
+	case 1:
+		return DRON_1_DOBA_LETU;
+	case 2:
+		return DRON_2_DOBA_LETU;
+	default:
+		return 0;
+	}
+}
+
+inline int dajDobuNabijaniaDronu(int typDronu)
+{
+	switch (typDronu)
+	{
+	case 1:
+		return DRON_1_NABITIE_10_PERC_BATERIE;
+	case 2:
+		return DRON_2_NABITIE_10_PERC_BATERIE;
+	default:
+		return 0;
+	}
+}
 
 enum Region
 {
