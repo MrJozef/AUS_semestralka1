@@ -5,11 +5,13 @@
 
 const int ASCII_CISLO_CISLICA = 48;			//rozdiel medzi cislicou v ascii (char) a cislom, ktore predstavuje (int)
 
-const int POCET_POLOZIEK_MENU = 5;
+const int POCET_POLOZIEK_MENU = 7;
 const std::string CESTA_K_SUBORU = "data.txt";
 
 const int ZACIATOCNA_HOD_DNA = 7;
 const int KONECNA_HOD_DNA = 21;
+
+const int POCET_REGIONOV = 25;
 
 //drony
 const int DRON_1_MAX_NOSNOST = 2;

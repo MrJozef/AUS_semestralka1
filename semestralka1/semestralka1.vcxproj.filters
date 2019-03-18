@@ -84,5 +84,8 @@
     <ClInclude Include="dron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="prekladisko.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
