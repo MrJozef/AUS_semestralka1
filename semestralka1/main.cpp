@@ -6,6 +6,7 @@
 #include "datum.h"
 #include "vozidlo.h"
 #include "prekladisko.h"
+#include "zasielka.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ int main()
 	{
 		(*prekladiska)[i] = new Prekladisko();
 	}
+	structures::LinkedList<Zasielka*>* listZasielok = new structures::LinkedList<Zasielka*>();
 
 	string pom = "";
 	bool pokracovat = true;
@@ -38,7 +40,7 @@ int main()
 		cout << "Aktualny cas: " + aktualny_cas->toString() + "\n\n";
 		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Nacitaj data zo suboru\n  3) Uloz aktualny stav do suboru" << endl;
 		cout << "  4) Pridaj vozidlo\n  5) Vypis vsetky vozidla\n  6) Pridaj dron\n  7) Vypis drony z prekladiska" << endl;
-		cout << "  8) Vytvor objednavku" << endl;
+		cout << "  8) Vytvor objednavku\n  9) Vypis objednavky" << endl;
 		cout << "  0) Koniec\n\n" << endl;
 
 		switch(nacitajInt(POCET_POLOZIEK_MENU))
@@ -52,11 +54,12 @@ int main()
 
 			if ((*subor).is_open())
 			{
+				int pocet;
+
 				aktualny_cas->fromSubor(subor);
 
-				int pocVoz;
-				*subor >> pocVoz;
-				for (int i = 0; i < pocVoz; i++)
+				*subor >> pocet;					//pocet vozidiel
+				for (int i = 0; i < pocet; i++)
 				{
 					listVozidiel->add(new Vozidlo(subor));
 				}
@@ -64,6 +67,12 @@ int main()
 				for (int i = 0; i < POCET_REGIONOV; i++)
 				{
 					(*prekladiska)[i]->fromSubor(subor);
+				}
+
+				*subor >> pocet;					//pocet zasielok
+				for(int i = 0; i < pocet; i++)
+				{
+					listZasielok->add(new Zasielka(subor));
 				}
 
 				(*subor).close();
@@ -91,6 +100,12 @@ int main()
 				for (int i = 0; i < POCET_REGIONOV; i++)
 				{
 					(*prekladiska)[i]->toSubor(subor);
+				}
+
+				*subor << listZasielok->size() << "\n";
+				for(Zasielka* zas : *listZasielok)
+				{
+					zas->toSubor(subor);
 				}
 
 				(*subor).close();
@@ -213,12 +228,12 @@ int main()
 
 		case 8://todo aj toto osetrit
 			double hmotnostZas;
-			int regZac;
-			int regKon;
+			short regZac;
+			short regKon;
 			int regZacVzdialenost;
 			int regKonVzdialenost;
 
-			cout << "Zadajte hmotnost zasielky:" << endl;
+			cout << "Zadajte hmotnost zasielky (v kg):" << endl;
 			zadavam();
 			cin >> hmotnostZas;
 
@@ -226,7 +241,7 @@ int main()
 			vypisPrekladiska();
 			zadavam();
 			cin >> regZac;
-			cout << "Zadajte vzdialenost zasielky od prekladiska:" << endl;
+			cout << "Zadajte vzdialenost zasielky od prekladiska (v km):" << endl;
 			zadavam();
 			cin >> regZacVzdialenost;
 
@@ -234,11 +249,20 @@ int main()
 			vypisPrekladiska();
 			zadavam();
 			cin >> regKon;
-			cout << "Zadajte vzdialenost miesta dorucenia od prekladiska:" << endl;
+			cout << "Zadajte vzdialenost miesta dorucenia od prekladiska (v km):" << endl;
 			zadavam();
 			cin >> regKonVzdialenost;
 
+			listZasielok->add(new Zasielka(hmotnostZas, regZac, regKon, regZacVzdialenost, regKonVzdialenost, aktualny_cas));
 
+			break;
+
+		case 9://todo odstranit - iba pre testovacie ucely!
+			for (Zasielka* zas : *listZasielok)
+			{
+				cout << zas->toString() << endl;
+			}
+			cin.get();
 			break;
 
 		case 0:
@@ -262,6 +286,12 @@ int main()
 		 delete (*prekladiska)[i];
 	}
 	delete prekladiska;
+
+	for(Zasielka* zas : *listZasielok)
+	{
+		delete zas;
+	}
+	delete listZasielok;
 
 	cin.get();
 	return 0;

@@ -3,7 +3,6 @@
 #include "../structures/array/array.h"
 #include "datum.h"
 
-
 using namespace std;
 
 class Vozidlo

@@ -87,5 +87,8 @@
     <ClInclude Include="prekladisko.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="zasielka.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

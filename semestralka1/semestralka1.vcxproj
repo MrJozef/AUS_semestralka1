@@ -139,6 +139,7 @@
     <ClInclude Include="dron.h" />
     <ClInclude Include="prekladisko.h" />
     <ClInclude Include="vozidlo.h" />
+    <ClInclude Include="zasielka.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

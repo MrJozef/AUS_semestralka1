@@ -5,7 +5,7 @@
 
 const int ASCII_CISLO_CISLICA = 48;			//rozdiel medzi cislicou v ascii (char) a cislom, ktore predstavuje (int)
 
-const int POCET_POLOZIEK_MENU = 8;
+const int POCET_POLOZIEK_MENU = 9;
 const std::string CESTA_K_SUBORU = "data.txt";
 
 const int ZACIATOCNA_HOD_DNA = 7;
@@ -89,7 +89,8 @@ enum DovodZamietnutia
 	mimoRadius,
 	velkaHmotnost,
 	vozNeuvezie,
-	plnePrekladisko		//todo neskore implementovanie
+	plnePrekladisko,		//todo neskore implementovanie
+	zrusZakaznikom
 };
 
 inline std::string toStringDovodZamietnutia(DovodZamietnutia x)
@@ -97,15 +98,17 @@ inline std::string toStringDovodZamietnutia(DovodZamietnutia x)
 	switch(x)
 	{
 	case (neskorVyzdvihnutie):
-		return "Zamietnutie A - Zasielka by musela byt vyzdvihnuta po 20:00";
+		return "Zamietnutie A - Zasielka by musela byt vyzdvihnuta po 20:00\n";
 	case (mimoRadius):
-		return "Zamietnutie B - Zasielka je mimo radius dronov";
+		return "Zamietnutie B - Zasielka je mimo radius dronov\n";
 	case (velkaHmotnost):
-		return "Zamietnutie C - Hmotnost zasielky prekracuje nosnost dronov";
+		return "Zamietnutie C - Hmotnost zasielky prekracuje nosnost dronov\n";
 	case (vozNeuvezie):
-		return "Zamietnutie D - Zasieku nie je mozne previest do Centralneho skladiska";
+		return "Zamietnutie D - Zasieku nie je mozne previest do Centralneho skladiska\n";
 	case (plnePrekladisko):
-		return "Zamietnutie E - Prekladisko je prilis zaneprazdnene";
+		return "Zamietnutie E - Prekladisko je prilis zaneprazdnene\n";
+	case (zrusZakaznikom):
+		return "Zakaznik svoju objednavku zrusil\n";
 
 	case (nezamietnuta):
 	default:
