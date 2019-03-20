@@ -5,7 +5,7 @@
 
 const int ASCII_CISLO_CISLICA = 48;			//rozdiel medzi cislicou v ascii (char) a cislom, ktore predstavuje (int)
 
-const int POCET_POLOZIEK_MENU = 7;
+const int POCET_POLOZIEK_MENU = 8;
 const std::string CESTA_K_SUBORU = "data.txt";
 
 const int ZACIATOCNA_HOD_DNA = 7;
@@ -22,7 +22,6 @@ const int DRON_2_MAX_NOSNOST = 5;
 const int DRON_2_RYCHLOST = 40;
 const int DRON_2_DOBA_LETU = 60;
 const int DRON_2_NABITIE_10_PERC_BATERIE = 5;
-
 
 inline int dajNosnostDronu(int typDronu)
 {
@@ -76,7 +75,40 @@ inline int dajDobuNabijaniaDronu(int typDronu)
 	}
 }
 
-enum Region
+enum Region		//todo aktualne nepouzivane
 {
 	MA, BA, TT, TN, NR, KN, CA, ZA, MT, PD, LV, NO, LM, BB, ZV, KA, LC, PP, RA, SL, SN, PO, KE, HE, MI
 };
+
+//Objednavky
+
+enum DovodZamietnutia
+{
+	nezamietnuta,
+	neskorVyzdvihnutie,
+	mimoRadius,
+	velkaHmotnost,
+	vozNeuvezie,
+	plnePrekladisko		//todo neskore implementovanie
+};
+
+inline std::string toStringDovodZamietnutia(DovodZamietnutia x)
+{
+	switch(x)
+	{
+	case (neskorVyzdvihnutie):
+		return "Zamietnutie A - Zasielka by musela byt vyzdvihnuta po 20:00";
+	case (mimoRadius):
+		return "Zamietnutie B - Zasielka je mimo radius dronov";
+	case (velkaHmotnost):
+		return "Zamietnutie C - Hmotnost zasielky prekracuje nosnost dronov";
+	case (vozNeuvezie):
+		return "Zamietnutie D - Zasieku nie je mozne previest do Centralneho skladiska";
+	case (plnePrekladisko):
+		return "Zamietnutie E - Prekladisko je prilis zaneprazdnene";
+
+	case (nezamietnuta):
+	default:
+		return "";
+	}
+}

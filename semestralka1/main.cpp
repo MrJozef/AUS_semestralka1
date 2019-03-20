@@ -38,6 +38,7 @@ int main()
 		cout << "Aktualny cas: " + aktualny_cas->toString() + "\n\n";
 		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Nacitaj data zo suboru\n  3) Uloz aktualny stav do suboru" << endl;
 		cout << "  4) Pridaj vozidlo\n  5) Vypis vsetky vozidla\n  6) Pridaj dron\n  7) Vypis drony z prekladiska" << endl;
+		cout << "  8) Vytvor objednavku" << endl;
 		cout << "  0) Koniec\n\n" << endl;
 
 		switch(nacitajInt(POCET_POLOZIEK_MENU))
@@ -105,18 +106,57 @@ int main()
 		case 4://todo osetrit nacitavanie udajov pre vozidla
 			int nosnost;
 			double nakladyNaRegion;
+			bool zhodnaSPZ;
+			zhodnaSPZ = false;
+			Vozidlo* pomVoz;
+			int cisReg;
 
 			cout << "Zadajte SPZ noveho vozidla:" << endl;
 			zadavam();
 			cin >> pom;
-			cout << "Zadajte nosnost vozidla (v tonach):" << endl;
-			zadavam();
-			cin >> nosnost;
-			cout << "Zadajte naklady na prevadzku (v Eurach na region):" << endl;
-			zadavam();
-			cin >> nakladyNaRegion;
 
-			listVozidiel->add(new Vozidlo(pom, nosnost, nakladyNaRegion, aktualny_cas));
+			for (Vozidlo* voz : *listVozidiel)
+			{
+				if (voz->getSPZ() == pom)
+				{
+					zhodnaSPZ = true;
+					break;
+				}
+			}
+
+			if (zhodnaSPZ)
+			{
+				cout << "Chyba - Zadana SPZ uz existuje!" << endl;
+				cin.ignore();
+			}
+			else
+			{
+				cout << "Zadajte nosnost vozidla (v tonach):" << endl;
+				zadavam();
+				cin >> nosnost;
+				cout << "Zadajte naklady na prevadzku (v Eurach na region):" << endl;
+				zadavam();
+				cin >> nakladyNaRegion;
+
+				pomVoz = new Vozidlo(pom, nosnost, nakladyNaRegion, aktualny_cas);
+				listVozidiel->add(pomVoz);
+
+				cout << "Vlozte trasu vozidla zadanim cisiel prislusnych regionov:\n(Zadavanie ukoncite prekladiskom v ZA)\n" << endl;
+				vypisPrekladiska();
+
+				zadavam();
+				cin >> cisReg;
+				
+				while(cisReg != 8)
+				{
+					cisReg--;
+					pomVoz->priradRegion(cisReg);
+					zadavam();
+					cin >> cisReg;
+				}
+
+			}
+
 			zadavamEnter();
 			break;
 
@@ -169,6 +209,36 @@ int main()
 			(*prekladiska)[cisloOkresu - 1]->vypisDrony(); //nakolko cislovanie zacina od 1, ale pole od indexu 0
 			cin.ignore();
 			zadavamEnter();
+			break;
+
+		case 8://todo aj toto osetrit
+			double hmotnostZas;
+			int regZac;
+			int regKon;
+			int regZacVzdialenost;
+			int regKonVzdialenost;
+
+			cout << "Zadajte hmotnost zasielky:" << endl;
+			zadavam();
+			cin >> hmotnostZas;
+
+			cout << "Zadajte region, v ktorom ma dron vyzdvihnut zasielku, zadanim prislusneho cisla:" << endl;
+			vypisPrekladiska();
+			zadavam();
+			cin >> regZac;
+			cout << "Zadajte vzdialenost zasielky od prekladiska:" << endl;
+			zadavam();
+			cin >> regZacVzdialenost;
+
+			cout << "Zadajte region, kam ma byt zasielka dorucena, zadanim prislusneho cisla:" << endl;
+			vypisPrekladiska();
+			zadavam();
+			cin >> regKon;
+			cout << "Zadajte vzdialenost miesta dorucenia od prekladiska:" << endl;
+			zadavam();
+			cin >> regKonVzdialenost;
+
+
 			break;
 
 		case 0:
