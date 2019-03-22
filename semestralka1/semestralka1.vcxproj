@@ -121,6 +121,7 @@
     <ClCompile Include="..\structures\vector\vector.cpp" />
     <ClCompile Include="dron.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="system.cpp" />
     <ClCompile Include="vozidlo.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +139,7 @@
     <ClInclude Include="datum.h" />
     <ClInclude Include="dron.h" />
     <ClInclude Include="prekladisko.h" />
+    <ClInclude Include="system.h" />
     <ClInclude Include="vozidlo.h" />
     <ClInclude Include="zasielka.h" />
   </ItemGroup>

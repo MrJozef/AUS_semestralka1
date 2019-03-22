@@ -9,7 +9,6 @@ class Prekladisko
 private:
 	structures::LinkedList<Dron*>* listDronov_;
 
-
 public:
 	Prekladisko();
 	Prekladisko(fstream* inSubor);//todo toto zatial nikde nepouzivam
@@ -55,6 +54,7 @@ inline void Prekladisko::fromSubor(fstream* inSubor)
 	int pocetDronov;
 	*inSubor >> pocetDronov;
 
+	listDronov_ = new structures::LinkedList<Dron*>();
 	for (int i = 0; i < pocetDronov; i++)
 	{
 		listDronov_->add(new Dron(inSubor));

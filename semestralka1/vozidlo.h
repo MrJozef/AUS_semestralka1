@@ -16,7 +16,7 @@ private:
 	structures::Array<bool>* trasa_;
 
 public:
-	Vozidlo(string spz, int nosnost, double naklady, Datum* zaradenie);
+	Vozidlo(string spz, int nosnost, double naklady, Datum* zaradenie, structures::Array<bool>* trasa);
 	Vozidlo(fstream* inSubor);
 	~Vozidlo();
 
@@ -24,7 +24,7 @@ public:
 	void toSubor(fstream* outSubor);
 
 	string getSPZ();
-	void priradRegion(int cisReg);
+	//void priradRegion(int cisReg);
 
 private:
 	void fromSubor(fstream* inSubor);

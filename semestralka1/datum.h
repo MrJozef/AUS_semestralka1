@@ -72,7 +72,6 @@ inline void Datum::fromSubor(fstream* inSubor)
 }
 
 
-//todo vo vypise napisat ze tento datum sa menit nemoze ak to bude potrebne
 inline bool Datum::dalsiaHodina()
 {
 	if (!menitelny_)

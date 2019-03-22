@@ -1,112 +1,74 @@
 #include <iostream>
 #include <fstream>
 #include "../structures/heap_monitor.h" 
-#include "../structures/list/array_list.h"
-#include "../structures/array/array.h"
-#include "datum.h"
-#include "vozidlo.h"
-#include "prekladisko.h"
-#include "zasielka.h"
+#include "system.h"
 
 using namespace std;
 
-int nacitajInt(int poCislo);
 void zadavam();
 void zadavamEnter();
 void vypisPrekladiska();
+int nacitajCeleKladneCislo();
+double nacitajKladneDouble();
+bool nacitajAN();
+int nacitajCeleKladneCisMensieRovne(int max, bool sNulou);
 
 int main()
 {
 	initHeapMonitor();
 
-	Datum* aktualny_cas = new Datum();
 	fstream* subor = new fstream;
-
-	structures::ArrayList<Vozidlo*>* listVozidiel = new structures::ArrayList<Vozidlo*>();
-
-	structures::Array<Prekladisko*>* prekladiska = new structures::Array<Prekladisko*>(POCET_REGIONOV);
-	for(int i = 0; i < POCET_REGIONOV; i++)
-	{
-		(*prekladiska)[i] = new Prekladisko();
-	}
-	structures::LinkedList<Zasielka*>* listZasielok = new structures::LinkedList<Zasielka*>();
+	System* AoE = nullptr;
 
 	string pom = "";
 	bool pokracovat = true;
+
+	cout << "  ~~  1. semestralna praca - Jozef Kubik  ~~\n\nPrajete si nacitat ulozeny projekt?  [A/N]\n" << endl;
+	cout << "(Ak nie, bude otvoreny novy projekt)" << endl;
+
+	if (nacitajAN())
+	{
+		(*subor).open(CESTA_K_SUBORU, ios::in);
+
+		if ((*subor).is_open())
+		{
+			AoE = new System(subor);
+			(*subor).close();
+			cout << "Data boli uspesne nacitane!" << endl;
+		}
+		else
+		{
+			cout << "Nastala chyba, nie je mozne otvorit subor s ulozenymi datami!" << endl;
+		}
+		zadavamEnter();
+	}
+	else
+	{
+		AoE = new System();
+	}
+
 	while (pokracovat)
 	{
 		system("cls");				//todo  toto odstranit?
-		cout << "1. semestralna praca - Jozef Kubik\n\n";
-		cout << "Aktualny cas: " + aktualny_cas->toString() + "\n\n";
-		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Nacitaj data zo suboru\n  3) Uloz aktualny stav do suboru" << endl;
-		cout << "  4) Pridaj vozidlo\n  5) Vypis vsetky vozidla\n  6) Pridaj dron\n  7) Vypis drony z prekladiska" << endl;
-		cout << "  8) Vytvor objednavku\n  9) Vypis objednavky" << endl;
+		cout << "  ~~  1. semestralna praca - Jozef Kubik  ~~\n\n";
+		cout << "Aktualny cas v systeme: " + AoE->casToString() + "\n\n";
+		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Uloz aktualny stav" << endl;
+		cout << "  3) Pridaj vozidlo\n  4) Vypis vsetky vozidla\n  5) Pridaj dron\n  6) Vypis drony z prekladiska" << endl;
+		cout << "  7) Vytvor objednavku\n  8) Vypis vsetky zasielky" << endl;
 		cout << "  0) Koniec\n\n" << endl;
 
-		switch(nacitajInt(POCET_POLOZIEK_MENU))
+		switch(nacitajCeleKladneCisMensieRovne(POCET_POLOZIEK_MENU, true))
 		{
 		case 1:
-			aktualny_cas->dalsiaHodina();
-			break;
-
-		case 2:
-			(*subor).open(CESTA_K_SUBORU, ios::in);
-
-			if ((*subor).is_open())
-			{
-				int pocet;
-
-				aktualny_cas->fromSubor(subor);
-
-				*subor >> pocet;					//pocet vozidiel
-				for (int i = 0; i < pocet; i++)
-				{
-					listVozidiel->add(new Vozidlo(subor));
-				}
-
-				for (int i = 0; i < POCET_REGIONOV; i++)
-				{
-					(*prekladiska)[i]->fromSubor(subor);
-				}
-
-				*subor >> pocet;					//pocet zasielok
-				for(int i = 0; i < pocet; i++)
-				{
-					listZasielok->add(new Zasielka(subor));
-				}
-
-				(*subor).close();
-				cout << "Data boli uspesne nacitane!" << endl;
-			}
-			else
-			{
-				cout << "Nastala chyba, nie je mozne otvorit subor s ulozenymi datami!" << endl;
-			}
-			zadavamEnter();
+			AoE->dalsiaHodina();
 			break;
 			
-		case 3:
+		case 2:
 			(*subor).open(CESTA_K_SUBORU, ios::out);
 
 			if ((*subor).is_open())
 			{
-				aktualny_cas->toSubor(subor);
-				*subor << listVozidiel->size() << "\n";
-				for (Vozidlo* voz : *listVozidiel)
-				{
-					voz->toSubor(subor);
-				}
-
-				for (int i = 0; i < POCET_REGIONOV; i++)
-				{
-					(*prekladiska)[i]->toSubor(subor);
-				}
-
-				*subor << listZasielok->size() << "\n";
-				for(Zasielka* zas : *listZasielok)
-				{
-					zas->toSubor(subor);
-				}
+				AoE->toSubor(subor);
 
 				(*subor).close();
 				cout << "Data boli uspesne ulozene do suboru!" << endl;
@@ -115,156 +77,120 @@ int main()
 			{
 				cout << "Nastala chyba, nie je mozne pripravit subor na zapis dat!" << endl;
 			}
+			cin.ignore();
 			zadavamEnter();
 			break;
 
-		case 4://todo osetrit nacitavanie udajov pre vozidla
-			int nosnost;
-			double nakladyNaRegion;
-			bool zhodnaSPZ;
-			zhodnaSPZ = false;
-			Vozidlo* pomVoz;
-			int cisReg;
+		case 3:
+			structures::Array<bool>* trasaVoz;
 
 			cout << "Zadajte SPZ noveho vozidla:" << endl;
 			zadavam();
 			cin >> pom;
 
-			for (Vozidlo* voz : *listVozidiel)
-			{
-				if (voz->getSPZ() == pom)
-				{
-					zhodnaSPZ = true;
-					break;
-				}
-			}
-
-			if (zhodnaSPZ)
+			if (AoE->overSPZ(pom))
 			{
 				cout << "Chyba - Zadana SPZ uz existuje!" << endl;
 				cin.ignore();
 			}
 			else
 			{
-				cout << "Zadajte nosnost vozidla (v tonach):" << endl;
-				zadavam();
-				cin >> nosnost;
-				cout << "Zadajte naklady na prevadzku (v Eurach na region):" << endl;
-				zadavam();
-				cin >> nakladyNaRegion;
+				int nosnost;
+				double nakladyNaRegion;
+				int cisReg;
 
-				pomVoz = new Vozidlo(pom, nosnost, nakladyNaRegion, aktualny_cas);
-				listVozidiel->add(pomVoz);
+				cout << "Zadajte nosnost vozidla (v kg):" << endl;
+				nosnost = nacitajCeleKladneCislo();
+
+				cout << "Zadajte naklady na prevadzku (v Eurach na region):" << endl;
+				nakladyNaRegion = nacitajKladneDouble();
 
 				cout << "Vlozte trasu vozidla zadanim cisiel prislusnych regionov:\n(Zadavanie ukoncite prekladiskom v ZA)\n" << endl;
 				vypisPrekladiska();
+				trasaVoz = new structures::Array<bool>(POCET_REGIONOV);
+				(*trasaVoz)[7] = true;			//ZA je vzdy True
+				cisReg = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false);
 
-				zadavam();
-				cin >> cisReg;
-				
 				while(cisReg != 8)
 				{
 					cisReg--;
-					pomVoz->priradRegion(cisReg);
-					zadavam();
-					cin >> cisReg;
+					(*trasaVoz)[cisReg] = true;
+					cisReg = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false);
 				}
 
+				AoE->pridajVozidlo(pom, nosnost, nakladyNaRegion, trasaVoz);
 			}
 
+			trasaVoz = nullptr;		//smernik si bude pametat novovytvorene vozidlo
 			zadavamEnter();
 			break;
 
-		case 5:
-			cout << "Zoznam vsetkych vozidiel firmy:\n" << endl;
-
-			if (listVozidiel->size() == 0)
-			{
-				cout << "  -  Aktualne firma nema ziadne vozidla  -\n" << endl;
-			}
-			else
-			{
-				for (Vozidlo* voz : *listVozidiel)
-				{
-					cout << voz->toString();
-				}
-			}
-			zadavamEnter();
-			break;
-
-		case 6://todo osetrit vstupy
-			int cisOkresu;
-			int cis;
-			int typ;
-
-			cout << "Zvolte prekladisko, do ktoreho chcete priradit novy dron zadanim prislusneho cisla:" << endl;
-			vypisPrekladiska();
-			zadavam();
-			cin >> cisOkresu;
-
-			cout << "Zadajte seriove cislo dronu:" << endl;
-			zadavam();
-			cin >> cis;
-			cout << "Zadajte typ dronu:" << endl;
-			zadavam();
-			cin >> typ;
-
-			(*prekladiska)[cisOkresu - 1]->pridajDron(cis, typ, aktualny_cas); //nakolko cislovanie zacina od 1, ale pole od indexu 0
-			zadavamEnter();
-			break;
-
-		case 7:
-			int cisloOkresu;
-
-			cout << "Zvolte prekladisko zadanim zodpovedajuceho cisla:\n" << endl;
-			vypisPrekladiska();
-			zadavam();
-			cin >> cisloOkresu;//todo osetrit
-
-			(*prekladiska)[cisloOkresu - 1]->vypisDrony(); //nakolko cislovanie zacina od 1, ale pole od indexu 0
+		case 4:
+			AoE->vypisVsetkyVozidla();
 			cin.ignore();
 			zadavamEnter();
 			break;
 
-		case 8://todo aj toto osetrit
+		case 5:
+			int cis;
+			int typ;
+			int cisOkresu;
+
+			cout << "Zvolte prekladisko, do ktoreho chcete priradit novy dron zadanim prislusneho cisla:" << endl;
+			vypisPrekladiska();
+			cisOkresu = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1;//nakolko cislovanie zacina od 1, ale pole od indexu 0			
+
+			cout << "Zadajte seriove cislo dronu:" << endl;
+			cis = nacitajCeleKladneCislo();
+			cout << "Zadajte typ dronu:" << endl;
+			typ = nacitajCeleKladneCisMensieRovne(POCET_TYPOV_DRONOV, false);
+
+
+			AoE->pridajDron(cisOkresu, cis, typ);
+			zadavamEnter();
+			break;
+
+		case 6:
+			cout << "Zvolte prekladisko zadanim zodpovedajuceho cisla:\n" << endl;
+			vypisPrekladiska();
+
+			AoE->vypisDrony(nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1);		//nakolko cislovanie zacina od 1, ale pole od indexu 0
+			cin.ignore();
+			zadavamEnter();
+			break;
+
+		case 7:
 			double hmotnostZas;
-			short regZac;
-			short regKon;
+			int regZac;
 			int regZacVzdialenost;
+			int regKon;
 			int regKonVzdialenost;
 
 			cout << "Zadajte hmotnost zasielky (v kg):" << endl;
-			zadavam();
-			cin >> hmotnostZas;
+			hmotnostZas = nacitajKladneDouble();
 
 			cout << "Zadajte region, v ktorom ma dron vyzdvihnut zasielku, zadanim prislusneho cisla:" << endl;
 			vypisPrekladiska();
-			zadavam();
-			cin >> regZac;
+			regZac = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false);
+
 			cout << "Zadajte vzdialenost zasielky od prekladiska (v km):" << endl;
-			zadavam();
-			cin >> regZacVzdialenost;
+			regZacVzdialenost = nacitajCeleKladneCislo();
 
 			cout << "Zadajte region, kam ma byt zasielka dorucena, zadanim prislusneho cisla:" << endl;
 			vypisPrekladiska();
-			zadavam();
-			cin >> regKon;
+			regKon = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false);
+
 			cout << "Zadajte vzdialenost miesta dorucenia od prekladiska (v km):" << endl;
-			zadavam();
-			cin >> regKonVzdialenost;
+			regKonVzdialenost = nacitajCeleKladneCislo();
 
-			listZasielok->add(new Zasielka(hmotnostZas, regZac, regKon, regZacVzdialenost, regKonVzdialenost, aktualny_cas));
-
+			AoE->vytvorZasielku(hmotnostZas, regZac, regKon, regZacVzdialenost, regKonVzdialenost);
 			break;
 
-		case 9://todo odstranit - iba pre testovacie ucely!
-			for (Zasielka* zas : *listZasielok)
-			{
-				cout << zas->toString() << endl;
-			}
-			cin.get();
+		case 8:
+			AoE->vypisVsetkyZasielky();
+			cin.ignore();
+			zadavamEnter();
 			break;
-
 		case 0:
 		default:
 			pokracovat = false;
@@ -272,50 +198,13 @@ int main()
 		}
 	}
 
-	delete aktualny_cas;
+	delete AoE;
 	delete subor;
-
-	for(Vozidlo* voz : *listVozidiel)
-	{
-		delete voz;
-	}
-	delete listVozidiel;
-
-	for(int i = 0; i < POCET_REGIONOV; i++)
-	{
-		 delete (*prekladiska)[i];
-	}
-	delete prekladiska;
-
-	for(Zasielka* zas : *listZasielok)
-	{
-		delete zas;
-	}
-	delete listZasielok;
 
 	cin.get();
 	return 0;
 }
 
-
-int nacitajInt(int poCislo)
-{
-	char cislo;
-	cout << "Zadajte cislo od 0 po " + to_string(poCislo) + ":" << endl;
-	zadavam();
-	cin >> cislo;
-	cin.ignore(1000, '\n');
-
-	while (!((cislo - ASCII_CISLO_CISLICA) <= poCislo && (cislo - ASCII_CISLO_CISLICA) >= 0))
-	{
-		cout << "Zly vstup! Zadajte cislo od 0 po " + to_string(poCislo) + ":" << endl;
-		zadavam();
-		cin.get(cislo);
-		cin.ignore(1000, '\n');
-	}
-
-	return cislo - ASCII_CISLO_CISLICA;
-}
 
 void zadavam() { cout << ">> "; }
 
@@ -326,4 +215,127 @@ void vypisPrekladiska()
 	cout << "MA - 1\t\tBA - 2\t\tTT - 3\t\tTN - 4\nNR - 5\t\tKN - 6\t\tCA - 7\t\tZA - 8\nMT - 9\t\tPD - 10\t\tLV - 11\t\t"
 	<< "NO - 12\nLM - 13\t\tBB - 14\t\tZV - 15\t\tKA - 16\nLC - 17\t\tPP - 18\t\tRA - 19\t\tSL - 20\nSN - 21\t\tPO - 22\t\t"
 	<< "KE - 23\t\tHE - 24\nMI - 25" << endl;
+}
+
+
+int nacitajCeleKladneCisMensieRovne(int max, bool sNulou)
+{
+	int cislo = nacitajCeleKladneCislo();
+
+	while ((cislo > max) || (!sNulou && cislo <= 0))
+	{
+
+		cout << "Zadane cislo nie je mensie, rovne " << to_string(max) << " a sucasne vacsie";
+		if(sNulou)
+		{
+			cout << ", rovne 0!" << endl;
+		}
+		else
+		{
+			cout << " ako 0!" << endl;
+		}
+		
+		cislo = nacitajCeleKladneCislo();
+	}
+
+	return cislo;
+}
+
+int nacitajCeleKladneCislo()
+{
+	bool zlyVstup = false;
+	string pom;
+	cout << "Zadajte cele, kladne cislo:" << endl;
+	zadavam();
+	cin >> pom;
+
+	for (unsigned int i = 0; i < pom.size(); i++)
+	{
+		if (!(pom[i] >= '0' && pom[i] <= '9'))
+		{
+			zlyVstup = true;
+			break;
+		}
+	}
+
+	while (zlyVstup)
+	{
+		cout << "Zly vstup! Zadajte cele, kladne cislo:" << endl;
+		zadavam();
+		cin >> pom;
+		zlyVstup = false;
+
+		for (unsigned int i = 0; i < pom.size(); i++)
+		{
+			if (!(pom[i] >= '0' && pom[i] <= '9'))
+			{
+				zlyVstup = true;
+				break;
+			}
+		}
+	}
+
+	return stoi(pom);
+}
+
+double nacitajKladneDouble()
+{
+	bool zlyVstup = false;
+	string pom;
+	cout << "Zadajte desatinne cislo (pouzite des. bodku):" << endl;
+	zadavam();
+	cin >> pom;
+
+	for (unsigned int i = 0; i < pom.size(); i++)
+	{
+		if (!((pom[i] >= '0' && pom[i] <= '9') || pom[i] == '.'))
+		{
+			zlyVstup = true;
+			break;
+		}
+	}
+
+	while (zlyVstup)
+	{
+		cout << "Zly vstup! Zadajte desatinne cislo (pouzite des. bodku):" << endl;
+		zadavam();
+		cin >> pom;
+		zlyVstup = false;
+
+		for (unsigned int i = 0; i < pom.size(); i++)
+		{
+			if (!((pom[i] >= '0' && pom[i] <= '9') || pom[i] == '.'))
+			{
+				zlyVstup = true;
+				break;
+			}
+		}
+	}
+
+	return stod(pom);
+}
+
+bool nacitajAN()
+{
+	char pismeno;
+	while (true)
+	{
+		zadavam();
+		cin >> pismeno;
+		if (pismeno == 'A' || pismeno == 'a')
+		{
+			return true;
+		}
+		else
+		{
+			if (pismeno == 'N' || pismeno == 'n')
+			{
+				return false;
+			}
+			else
+			{
+				cout << "Zly vstup! Stlacte klavesu A alebo N\n" << endl;
+			}
+		}
+	}
 }

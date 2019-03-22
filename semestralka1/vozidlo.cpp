@@ -1,14 +1,14 @@
 #include "../structures/heap_monitor.h"
 #include "vozidlo.h"
 
-Vozidlo::Vozidlo(string spz, int nosnost, double naklady, Datum * zaradenie)
+Vozidlo::Vozidlo(string spz, int nosnost, double naklady, Datum * zaradenie, structures::Array<bool>* trasa)
 {
 	zarDoEvidencie_ = new Datum(zaradenie->dajDen(), zaradenie->dajHodinu());
 	SPZ_ = spz;
 	nosnost_ = nosnost;
 	nakladyNaReg_ = naklady;
 	celkNaklady_ = 0;
-	trasa_ = new structures::Array<bool>(POCET_REGIONOV);
+	trasa_ = trasa;
 }
 
 Vozidlo::Vozidlo(fstream* inSubor)
@@ -26,9 +26,9 @@ Vozidlo::~Vozidlo()
 }
 
 string Vozidlo::toString()
-{		//todo zaokruhlit celkNaklady_
-	return "Vozidlo: " + SPZ_ + "\n  Nosnost: " + to_string(nosnost_) + " t\t\tCelkove prevadzkove naklady: " + to_string(celkNaklady_)
-		+ " Eur\n\t\t\tZaradenie do evidencie: " + zarDoEvidencie_->toString();
+{
+	return "Vozidlo: " + SPZ_ + "\n  Nosnost: " + to_string(nosnost_) + " kg\t\t\tCelkove prevadzkove naklady: " + to_string(celkNaklady_)
+		+ " Eur\n  Zaradenie do evidencie: " + zarDoEvidencie_->toString();
 }
 
 void Vozidlo::toSubor(fstream* outSubor)
@@ -46,12 +46,12 @@ string Vozidlo::getSPZ()
 {
 	return SPZ_;
 }
-
+/*
 void Vozidlo::priradRegion(int cisReg)
 {
 	(*trasa_)[cisReg] = true;
 }
-
+*/
 void Vozidlo::fromSubor(fstream* inSubor)
 {
 	zarDoEvidencie_ = new Datum(inSubor);
