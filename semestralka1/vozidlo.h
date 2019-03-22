@@ -24,7 +24,6 @@ public:
 	void toSubor(fstream* outSubor);
 
 	string getSPZ();
-	//void priradRegion(int cisReg);
 
 private:
 	void fromSubor(fstream* inSubor);

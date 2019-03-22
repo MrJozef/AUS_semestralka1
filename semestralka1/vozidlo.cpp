@@ -46,12 +46,7 @@ string Vozidlo::getSPZ()
 {
 	return SPZ_;
 }
-/*
-void Vozidlo::priradRegion(int cisReg)
-{
-	(*trasa_)[cisReg] = true;
-}
-*/
+
 void Vozidlo::fromSubor(fstream* inSubor)
 {
 	zarDoEvidencie_ = new Datum(inSubor);

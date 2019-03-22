@@ -21,6 +21,7 @@ public:
 
 	void toSubor(fstream* outSubor);
 	string toString();
+	void zamietni(DovodZamietnutia dovod);
 
 private:
 	void fromSubor(fstream* inSubor);
@@ -95,5 +96,11 @@ inline string Zasielka::toString()
 {
 	return "Objednavka:\n  Datum odoslania: " + odoslanie_->toString() + "  Hmotnost: " + to_string(hmotnost_) + " kg\n  Region odosielatela: " +
 		to_string(regZac_) + "\t\t\tRegion odberatela: " +
-		to_string(regKon_) + "\n  Vzdialenost: " + to_string(regZacVzdial_) + "\t\t\t\tVzdialenost: " + to_string(regKonVzdial_) + "\n";
+		to_string(regKon_) + "\n  Vzdialenost: " + to_string(regZacVzdial_) + " km\t\t\t\tVzdialenost: " + to_string(regKonVzdial_) + " km\n" +
+		toStringDovodZamietnutia(zamietnutie_);
+}
+
+inline void Zasielka::zamietni(DovodZamietnutia dovod)
+{
+	zamietnutie_ = dovod;
 }

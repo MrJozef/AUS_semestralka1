@@ -171,14 +171,14 @@ int main()
 
 			cout << "Zadajte region, v ktorom ma dron vyzdvihnut zasielku, zadanim prislusneho cisla:" << endl;
 			vypisPrekladiska();
-			regZac = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false);
+			regZac = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1;
 
 			cout << "Zadajte vzdialenost zasielky od prekladiska (v km):" << endl;
 			regZacVzdialenost = nacitajCeleKladneCislo();
 
 			cout << "Zadajte region, kam ma byt zasielka dorucena, zadanim prislusneho cisla:" << endl;
 			vypisPrekladiska();
-			regKon = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false);
+			regKon = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1;
 
 			cout << "Zadajte vzdialenost miesta dorucenia od prekladiska (v km):" << endl;
 			regKonVzdialenost = nacitajCeleKladneCislo();
