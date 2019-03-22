@@ -10,6 +10,7 @@ const std::string CESTA_K_SUBORU = "data.txt";
 
 const int ZACIATOCNA_HOD_DNA = 7;
 const int KONECNA_HOD_DNA = 21;
+const int POSLEDNA_HOD_NA_VYZD_DRONOM = 20;
 
 const int POCET_REGIONOV = 25;
 const int POCET_TYPOV_DRONOV = 2;
@@ -105,7 +106,7 @@ inline std::string toStringDovodZamietnutia(DovodZamietnutia x)
 	case (velkaHmotnost):
 		return "Zamietnutie C - Hmotnost zasielky prekracuje nosnost dronov\n";
 	case (vozNeuvezie):
-		return "Zamietnutie D - Zasieku nie je mozne previest do Centralneho skladiska\n";
+		return "Zamietnutie D - Zasielku nie je mozne previest dostupnymi vozidlami\n";
 	case (plnePrekladisko):
 		return "Zamietnutie E - Prekladisko je prilis zaneprazdnene\n";
 	case (zrusZakaznikom):

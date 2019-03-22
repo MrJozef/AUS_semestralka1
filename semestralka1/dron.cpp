@@ -9,6 +9,7 @@ Dron::Dron(int cislo, int typ, Datum* zaradenie)
 	typ_ = static_cast<short>(typ);
 	nalietHodiny_ = 0;
 	prepravZasielky_ = 0;
+	nabitie_ = 100;
 }
 
 Dron::Dron(fstream* inSubor)
@@ -33,7 +34,12 @@ string Dron::toString()
 void Dron::toSubor(fstream* outSubor)
 {
 	zarDoEvidencie_->toSubor(outSubor);
-	*outSubor << serioveCislo_ << "\n" << typ_ << "\n" << nalietHodiny_ << "\n" << prepravZasielky_ << "\n";
+	*outSubor << serioveCislo_ << "\n" << typ_ << "\n" << nalietHodiny_ << "\n" << prepravZasielky_ << "\n" << nabitie_ << "\n";
+}
+
+int Dron::dajTyp()
+{
+	return typ_;
 }
 
 void Dron::fromSubor(fstream* inSubor)
@@ -43,4 +49,5 @@ void Dron::fromSubor(fstream* inSubor)
 	*inSubor >> typ_;
 	*inSubor >> nalietHodiny_;
 	*inSubor >> prepravZasielky_;
+	*inSubor >> nabitie_;
 }

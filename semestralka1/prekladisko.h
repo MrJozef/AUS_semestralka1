@@ -18,6 +18,8 @@ public:
 	void pridajDron(int cislo, int typ, Datum* zaradenie);
 	void vypisDrony();
 	void fromSubor(fstream* inSubor);
+
+	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
 };
 
 inline Prekladisko::Prekladisko()
@@ -81,4 +83,26 @@ inline void Prekladisko::vypisDrony()
 			cout << dron->toString();
 		}
 	}
+}
+
+inline DovodZamietnutia Prekladisko::overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost)
+{
+	DovodZamietnutia pom = mimoRadius;
+	int typ;
+
+	for (Dron* dron : *listDronov_)
+	{
+		typ = dron->dajTyp();
+
+		if (dajNosnostDronu(typ) > hmotnostZasielky)
+		{
+			if (((static_cast<double>(dajDobuLetuDronu(typ)) / 60) * (dajRychlostDronu(typ) / 2)) > vzdialenost)
+			{
+				pom = nezamietnuta;
+			}
+			else { pom = mimoRadius; }
+		}
+		else { pom = velkaHmotnost; }
+	}
+	return pom;
 }

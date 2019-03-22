@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../structures/heap_monitor.h"
 #include "system.h"
 
@@ -136,9 +137,62 @@ void System::vypisVsetkyZasielky()
 
 void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacVzdialenost, int regKonVzdialenost)
 {
-	listZasielok_->add(new Zasielka(hmotnost, static_cast<short>(regZac), static_cast<short>(regKon), regZacVzdialenost, regKonVzdialenost, aktualnyCas_));
+	Zasielka* pomZasielka = new Zasielka(hmotnost, static_cast<short>(regZac), static_cast<short>(regKon), regZacVzdialenost, regKonVzdialenost, aktualnyCas_);
 
-	//tu bude kontrola
+	listZasielok_->add(pomZasielka);
+	DovodZamietnutia stavObjednavky = nezamietnuta;
+
+	if (aktualnyCas_->dajHodinu() < POSLEDNA_HOD_NA_VYZD_DRONOM)		//todo toto takto asi nie
+	{
+		stavObjednavky = (*listPrekladisk_)[regZac]->overPrevzatieZasielky(hmotnost, regZacVzdialenost);
+		if (stavObjednavky == nezamietnuta)						//ci drony nedokazu objednavku vyzdvihnut u odosielatela
+		{
+			stavObjednavky = (*listPrekladisk_)[regKon]->overPrevzatieZasielky(hmotnost, regKonVzdialenost);
+			if (stavObjednavky == nezamietnuta)					//ci drony nedokazu dorucit objednavku
+			{
+				//todo zasielka naozaj prevzata do 20:00
+
+				stavObjednavky = vozNeuvezie;
+				//test odvoz vozidlom do centralneho skladu
+				for (Vozidlo* voz : *listVozidiel_)
+				{
+					if(voz->overPrechodRegion(regZac))
+					{
+						if(voz->overDoSkladu(hmotnost))
+						{
+							stavObjednavky = nezamietnuta;
+							break;
+						}
+					}
+				}
+
+				if (stavObjednavky == nezamietnuta)
+				{
+					stavObjednavky = vozNeuvezie;
+					//test odvoz vozidlom do prekladiska
+					for (Vozidlo* voz : *listVozidiel_)
+					{
+						if (voz->overPrechodRegion(regKon))
+						{
+							if (voz->overDoPrekladiska(hmotnost))
+							{
+								stavObjednavky = nezamietnuta;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		stavObjednavky = neskorVyzdvihnutie;
+	}
+
+	pomZasielka->zamietni(stavObjednavky);
+	cout << toStringDovodZamietnutia(stavObjednavky) << endl;
+	pomZasielka = nullptr;
 }
 
 void System::pridajVozidlo(string spz, int nosnost, double naklady, structures::Array<bool>* trasaVoz)

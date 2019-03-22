@@ -9,6 +9,8 @@ Vozidlo::Vozidlo(string spz, int nosnost, double naklady, Datum * zaradenie, str
 	nakladyNaReg_ = naklady;
 	celkNaklady_ = 0;
 	trasa_ = trasa;
+	nalozDoSkladu_ = 0;
+	nalozDoPrekladiska_ = 0;
 }
 
 Vozidlo::Vozidlo(fstream* inSubor)
@@ -34,7 +36,7 @@ string Vozidlo::toString()
 void Vozidlo::toSubor(fstream* outSubor)
 {
 	zarDoEvidencie_->toSubor(outSubor);
-	*outSubor  << SPZ_ << "\n" << nosnost_ << "\n" << nakladyNaReg_ << "\n" << celkNaklady_ << "\n";
+	*outSubor << SPZ_ << "\n" << nosnost_ << "\n" << nakladyNaReg_ << "\n" << celkNaklady_ << "\n" << nalozDoSkladu_ << "\n" << nalozDoPrekladiska_ << "\n";
 
 	for (int i = 0; i < POCET_REGIONOV; i++)
 	{
@@ -47,6 +49,21 @@ string Vozidlo::getSPZ()
 	return SPZ_;
 }
 
+bool Vozidlo::overDoSkladu(double hmotnostZas)
+{		//todo pridat aj zasobnik (teoreticky nie je treba lebo viem ze vsetky tieto zasielky doveziem do centr. skladu)
+	return ((hmotnostZas + nalozDoSkladu_) < nosnost_);
+}
+
+bool Vozidlo::overDoPrekladiska(double hmotnostZas)
+{		//todo pridat aj zasobnik
+	return ((hmotnostZas + nalozDoPrekladiska_) < nosnost_);
+}
+
+bool Vozidlo::overPrechodRegion(int region)
+{
+	return (*trasa_)[region];
+}
+
 void Vozidlo::fromSubor(fstream* inSubor)
 {
 	zarDoEvidencie_ = new Datum(inSubor);
@@ -54,6 +71,8 @@ void Vozidlo::fromSubor(fstream* inSubor)
 	*inSubor >> nosnost_;
 	*inSubor >> nakladyNaReg_;
 	*inSubor >> celkNaklady_;
+	*inSubor >> nalozDoSkladu_;
+	*inSubor >> nalozDoPrekladiska_;
 
 	for (int i = 0; i < POCET_REGIONOV; i++)
 	{

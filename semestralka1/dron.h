@@ -11,6 +11,8 @@ private:
 	double nalietHodiny_;
 	int prepravZasielky_;
 
+	int nabitie_;
+
 public:
 	Dron(int cislo, int typ, Datum* zaradenie);
 	Dron(fstream* inSubor);
@@ -18,6 +20,7 @@ public:
 
 	string toString();
 	void toSubor(fstream* outSubor);
+	int dajTyp();
 
 private:
 	void fromSubor(fstream* inSubor);

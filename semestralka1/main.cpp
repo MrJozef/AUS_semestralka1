@@ -184,6 +184,8 @@ int main()
 			regKonVzdialenost = nacitajCeleKladneCislo();
 
 			AoE->vytvorZasielku(hmotnostZas, regZac, regKon, regZacVzdialenost, regKonVzdialenost);
+			cin.ignore();
+			zadavamEnter();
 			break;
 
 		case 8:
