@@ -15,7 +15,6 @@ Vozidlo::Vozidlo(string spz, int nosnost, double naklady, Datum * zaradenie, str
 
 Vozidlo::Vozidlo(fstream* inSubor)
 {
-	trasa_ = new structures::Array<bool>(POCET_REGIONOV);
 	fromSubor(inSubor);
 }
 
@@ -66,6 +65,7 @@ bool Vozidlo::overPrechodRegion(int region)
 
 void Vozidlo::fromSubor(fstream* inSubor)
 {
+	trasa_ = new structures::Array<bool>(POCET_REGIONOV);
 	zarDoEvidencie_ = new Datum(inSubor);
 	*inSubor >> SPZ_;
 	*inSubor >> nosnost_;

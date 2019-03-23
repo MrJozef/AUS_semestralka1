@@ -13,9 +13,11 @@ const int KONECNA_HOD_DNA = 21;
 const int POSLEDNA_HOD_NA_VYZD_DRONOM = 20;
 
 const int POCET_REGIONOV = 25;
-const int POCET_TYPOV_DRONOV = 2;
+const int REGION_ZILINA = 7;
 
 //drony
+const int POCET_TYPOV_DRONOV = 2;
+
 const int DRON_1_MAX_NOSNOST = 2;
 const int DRON_1_RYCHLOST = 80;
 const int DRON_1_DOBA_LETU = 40;
@@ -74,6 +76,24 @@ inline int dajDobuNabijaniaDronu(int typDronu)
 		return DRON_2_NABITIE_10_PERC_BATERIE;
 	default:
 		return 0;
+	}
+}
+
+enum StavDronu
+{
+	volny,
+	pracuje
+};
+
+inline std::string toStringStavDronu(StavDronu x)
+{
+	switch (x)
+	{
+	case pracuje:
+		return "Dron aktualne pracuje\n";
+	case volny:
+	default:
+		return "Dron je aktualne volny (nepracuje, nabija sa)\n";
 	}
 }
 

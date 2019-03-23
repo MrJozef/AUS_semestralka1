@@ -142,7 +142,7 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 	listZasielok_->add(pomZasielka);
 	DovodZamietnutia stavObjednavky = nezamietnuta;
 
-	if (aktualnyCas_->dajHodinu() < POSLEDNA_HOD_NA_VYZD_DRONOM)		//todo toto takto asi nie
+	if (aktualnyCas_->dajHodinu() < POSLEDNA_HOD_NA_VYZD_DRONOM)
 	{
 		stavObjednavky = (*listPrekladisk_)[regZac]->overPrevzatieZasielky(hmotnost, regZacVzdialenost);
 		if (stavObjednavky == nezamietnuta)						//ci drony nedokazu objednavku vyzdvihnut u odosielatela
@@ -152,32 +152,38 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 			{
 				//todo zasielka naozaj prevzata do 20:00
 
-				stavObjednavky = vozNeuvezie;
-				//test odvoz vozidlom do centralneho skladu
-				for (Vozidlo* voz : *listVozidiel_)
-				{
-					if(voz->overPrechodRegion(regZac))
-					{
-						if(voz->overDoSkladu(hmotnost))
-						{
-							stavObjednavky = nezamietnuta;
-							break;
-						}
-					}
-				}
-
-				if (stavObjednavky == nezamietnuta)
+				if (regZac != REGION_ZILINA)			//ak sa objednavka urobi v ziline, nemusim kontrolovat, ci ju vozidlo dovezie do centralneho skladu
 				{
 					stavObjednavky = vozNeuvezie;
-					//test odvoz vozidlom do prekladiska
+					//test odvoz vozidlom do centralneho skladu
 					for (Vozidlo* voz : *listVozidiel_)
 					{
-						if (voz->overPrechodRegion(regKon))
+						if (voz->overPrechodRegion(regZac))
 						{
-							if (voz->overDoPrekladiska(hmotnost))
+							if (voz->overDoSkladu(hmotnost))
 							{
 								stavObjednavky = nezamietnuta;
 								break;
+							}
+						}
+					}
+				}
+				
+				if (regKon != REGION_ZILINA)
+				{
+					if (stavObjednavky == nezamietnuta)
+					{
+						stavObjednavky = vozNeuvezie;
+						//test odvoz vozidlom do prekladiska
+						for (Vozidlo* voz : *listVozidiel_)
+						{
+							if (voz->overPrechodRegion(regKon))
+							{
+								if (voz->overDoPrekladiska(hmotnost))
+								{
+									stavObjednavky = nezamietnuta;
+									break;
+								}
 							}
 						}
 					}

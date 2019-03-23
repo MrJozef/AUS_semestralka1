@@ -20,6 +20,7 @@ public:
 	void fromSubor(fstream* inSubor);
 
 	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
+	bool prevezmiZasielku(double hmotnostZasielky, int vzdialenost);
 };
 
 inline Prekladisko::Prekladisko()
@@ -105,4 +106,26 @@ inline DovodZamietnutia Prekladisko::overPrevzatieZasielky(double hmotnostZasiel
 		else { pom = velkaHmotnost; }
 	}
 	return pom;
+}
+
+inline bool Prekladisko::prevezmiZasielku(double hmotnostZasielky, int vzdialenost)
+{
+	Dron* vybranyDron = nullptr;
+	int aktNosnost = 100000;
+	int aktNabitie = 0;
+
+	for (Dron* dron : *listDronov_)
+	{
+		if (dron->dajStav() == volny)
+		{
+			if (dajNosnostDronu(dron->dajTyp()) < aktNosnost && dron->dajNabitie() > aktNabitie && dron->doletis(vzdialenost))
+			{
+				vybranyDron = dron;
+				aktNosnost = dajNosnostDronu(dron->dajTyp());
+				aktNabitie = dron->dajNabitie();
+			}
+		}
+	}
+
+
 }
