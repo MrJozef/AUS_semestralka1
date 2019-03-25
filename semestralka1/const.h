@@ -14,6 +14,7 @@ const int POSLEDNA_HOD_NA_VYZD_DRONOM = 20;
 
 const int POCET_REGIONOV = 25;
 const int REGION_ZILINA = 7;
+const int STUPNE_FAHRENHEITA = 451;			//only Easter Egg, potrebujem nejake cislo do funkcie, ktora mi zabezpeci, aby som nenacital nulu a na takuto vzdialenost urcite nikdy dron nedokaze nic prepravit
 
 //drony
 const int POCET_TYPOV_DRONOV = 2;
@@ -82,7 +83,8 @@ inline int dajDobuNabijaniaDronu(int typDronu)
 enum StavDronu
 {
 	volny,
-	pracuje
+	pracuje,
+	nabija
 };
 
 inline std::string toStringStavDronu(StavDronu x)
@@ -91,6 +93,8 @@ inline std::string toStringStavDronu(StavDronu x)
 	{
 	case pracuje:
 		return "Dron aktualne pracuje\n";
+	case nabija:
+		return "Dron sa aktualne nabija\n";
 	case volny:
 	default:
 		return "Dron je aktualne volny (nepracuje, nabija sa)\n";

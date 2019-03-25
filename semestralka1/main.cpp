@@ -174,14 +174,14 @@ int main()
 			regZac = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1;
 
 			cout << "Zadajte vzdialenost zasielky od prekladiska (v km):" << endl;
-			regZacVzdialenost = nacitajCeleKladneCislo();
+			regZacVzdialenost = nacitajCeleKladneCisMensieRovne(STUPNE_FAHRENHEITA, false);
 
 			cout << "Zadajte region, kam ma byt zasielka dorucena, zadanim prislusneho cisla:" << endl;
 			vypisPrekladiska();
 			regKon = nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1;
 
 			cout << "Zadajte vzdialenost miesta dorucenia od prekladiska (v km):" << endl;
-			regKonVzdialenost = nacitajCeleKladneCislo();
+			regKonVzdialenost = nacitajCeleKladneCisMensieRovne(STUPNE_FAHRENHEITA, false);
 
 			AoE->vytvorZasielku(hmotnostZas, regZac, regKon, regZacVzdialenost, regKonVzdialenost);
 			cin.ignore();

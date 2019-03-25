@@ -103,6 +103,10 @@ string System::casToString()
 void System::dalsiaHodina()
 {
 	aktualnyCas_->dalsiaHodina();
+	for (int i = 0; i < POCET_REGIONOV; i++)
+	{
+		(*listPrekladisk_)[i]->dalsiaHodina();
+	}
 }
 
 void System::vypisVsetkyVozidla()
@@ -142,6 +146,10 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 	listZasielok_->add(pomZasielka);
 	DovodZamietnutia stavObjednavky = nezamietnuta;
 
+	Vozidlo* vozDoCentralSkladu = nullptr;
+	Vozidlo* vozDoPrekladiska = nullptr;
+	Dron* dronDoSkladu = nullptr;
+
 	if (aktualnyCas_->dajHodinu() < POSLEDNA_HOD_NA_VYZD_DRONOM)
 	{
 		stavObjednavky = (*listPrekladisk_)[regZac]->overPrevzatieZasielky(hmotnost, regZacVzdialenost);
@@ -150,7 +158,6 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 			stavObjednavky = (*listPrekladisk_)[regKon]->overPrevzatieZasielky(hmotnost, regKonVzdialenost);
 			if (stavObjednavky == nezamietnuta)					//ci drony nedokazu dorucit objednavku
 			{
-				//todo zasielka naozaj prevzata do 20:00
 
 				if (regZac != REGION_ZILINA)			//ak sa objednavka urobi v ziline, nemusim kontrolovat, ci ju vozidlo dovezie do centralneho skladu
 				{
@@ -162,6 +169,7 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 						{
 							if (voz->overDoSkladu(hmotnost))
 							{
+								vozDoCentralSkladu = voz;
 								stavObjednavky = nezamietnuta;
 								break;
 							}
@@ -181,9 +189,36 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 							{
 								if (voz->overDoPrekladiska(hmotnost))
 								{
+									vozDoPrekladiska = voz;
 									stavObjednavky = nezamietnuta;
 									break;
 								}
+							}
+						}
+					}
+				}
+
+
+				//ci je zasielka naozaj prevzata do 20:00
+				if (stavObjednavky == nezamietnuta)
+				{
+					dronDoSkladu = (*listPrekladisk_)[regZac]->vyberDron(hmotnost, regZacVzdialenost);
+					int minutyDoVyzdvihnutia = dronDoSkladu->overCasVyzdvihnutia(regZacVzdialenost);
+
+
+					if (aktualnyCas_->dajHodinu() + (minutyDoVyzdvihnutia / 60) >= POSLEDNA_HOD_NA_VYZD_DRONOM)
+					{
+						stavObjednavky = neskorVyzdvihnutie;		//zasielku nemozeme prijat lebo by sme ju museli vyzdvihnut po 20:00
+					}
+					else
+					{
+						if (minutyDoVyzdvihnutia > 60)
+						{
+							cout << "Vyzdvihnutie zasielky moze trvat viac ako 1 hodinu, napriek tomu chcete odoslat objednavku? [A/N]" << endl;
+
+							if (!nacitajAnoNie())
+							{
+								stavObjednavky = zrusZakaznikom;
 							}
 						}
 					}
@@ -194,6 +229,22 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 	else
 	{
 		stavObjednavky = neskorVyzdvihnutie;
+	}
+
+	if (stavObjednavky == nezamietnuta)
+	{
+		if (regZac != REGION_ZILINA)
+		{
+			vozDoCentralSkladu->nalozZasDoSkladu(hmotnost);
+		}
+
+		if (regKon != REGION_ZILINA)
+		{
+			vozDoPrekladiska->nalozZasDoPrekladiska(hmotnost);
+		}
+		
+		int celkCasTransportuDoSkladu = dronDoSkladu->transportujZasielku(regZacVzdialenost);		//prikaz na transport => na zaradenie zasielky do rozvrhu
+		cout << "celkCasTransportuDoSkladu: " + to_string(celkCasTransportuDoSkladu);
 	}
 
 	pomZasielka->zamietni(stavObjednavky);
@@ -221,4 +272,29 @@ bool System::overSPZ(string spz)
 void System::pridajDron(int cisOkresu, int cis, int typ)
 {
 	(*listPrekladisk_)[cisOkresu]->pridajDron(cis, typ, aktualnyCas_);
+}
+
+bool System::nacitajAnoNie()
+{
+	char pismeno;
+	while (true)
+	{
+		cout << ">> ";
+		cin >> pismeno;
+		if (pismeno == 'A' || pismeno == 'a')
+		{
+			return true;
+		}
+		else
+		{
+			if (pismeno == 'N' || pismeno == 'n')
+			{
+				return false;
+			}
+			else
+			{
+				cout << "Zly vstup! Stlacte klavesu A alebo N\n" << endl;
+			}
+		}
+	}
 }

@@ -36,4 +36,5 @@ public:
 
 private:
 	void fromSubor(fstream* inSubor);
+	bool nacitajAnoNie();
 };

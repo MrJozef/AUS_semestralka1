@@ -18,9 +18,10 @@ public:
 	void pridajDron(int cislo, int typ, Datum* zaradenie);
 	void vypisDrony();
 	void fromSubor(fstream* inSubor);
+	void dalsiaHodina();
 
 	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
-	bool prevezmiZasielku(double hmotnostZasielky, int vzdialenost);
+	Dron* vyberDron(double hmotnostZasielky, int vzdialenost);
 };
 
 inline Prekladisko::Prekladisko()
@@ -64,6 +65,14 @@ inline void Prekladisko::fromSubor(fstream* inSubor)
 	}
 }
 
+inline void Prekladisko::dalsiaHodina()
+{
+	for(Dron* dron : *listDronov_)
+	{
+		dron->dalsiaHodina();
+	}
+}
+
 inline void Prekladisko::pridajDron(int cislo, int typ, Datum* zaradenie)
 {
 	listDronov_->add(new Dron(cislo, typ, zaradenie));
@@ -95,11 +104,12 @@ inline DovodZamietnutia Prekladisko::overPrevzatieZasielky(double hmotnostZasiel
 	{
 		typ = dron->dajTyp();
 
-		if (dajNosnostDronu(typ) > hmotnostZasielky)
+		if (dajNosnostDronu(typ) >= hmotnostZasielky)
 		{
-			if (((static_cast<double>(dajDobuLetuDronu(typ)) / 60) * (dajRychlostDronu(typ) / 2)) > vzdialenost)
+			if (((static_cast<double>(dajDobuLetuDronu(typ)) / 60) * (static_cast<double>(dajRychlostDronu(typ)) / 2)) >= vzdialenost)
 			{
 				pom = nezamietnuta;
+				break;
 			}
 			else { pom = mimoRadius; }
 		}
@@ -108,17 +118,18 @@ inline DovodZamietnutia Prekladisko::overPrevzatieZasielky(double hmotnostZasiel
 	return pom;
 }
 
-inline bool Prekladisko::prevezmiZasielku(double hmotnostZasielky, int vzdialenost)
+inline Dron* Prekladisko::vyberDron(double hmotnostZasielky, int vzdialenost)
 {
 	Dron* vybranyDron = nullptr;
 	int aktNosnost = 100000;
 	int aktNabitie = 0;
 
+
 	for (Dron* dron : *listDronov_)
 	{
 		if (dron->dajStav() == volny)
 		{
-			if (dajNosnostDronu(dron->dajTyp()) < aktNosnost && dron->dajNabitie() > aktNabitie && dron->doletis(vzdialenost))
+			if ((dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky) && (dajNosnostDronu(dron->dajTyp()) < aktNosnost) && (dron->dajNabitie() > aktNabitie) && (dron->doletis(vzdialenost)))
 			{
 				vybranyDron = dron;
 				aktNosnost = dajNosnostDronu(dron->dajTyp());
@@ -127,5 +138,24 @@ inline bool Prekladisko::prevezmiZasielku(double hmotnostZasielky, int vzdialeno
 		}
 	}
 
+	//ak som mal volny dron v Prekladisku, tak ho budem mat v premennej vybranyDron
 
+	if (vybranyDron == nullptr)
+	{
+		int minutyDoVyzdvihnutia = 10000000;
+
+		for (Dron* dron : *listDronov_)
+		{
+			if (dron->doletis(vzdialenost) && dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky)
+			{
+				if (dron->dajMinutyZaneprazd() < minutyDoVyzdvihnutia)
+				{
+					minutyDoVyzdvihnutia = dron->dajMinutyZaneprazd();
+					vybranyDron = dron;
+				}
+			}
+		}
+	}
+
+	return vybranyDron;
 }

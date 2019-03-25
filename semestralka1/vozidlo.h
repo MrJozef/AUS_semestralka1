@@ -28,9 +28,12 @@ public:
 
 	string getSPZ();
 
+	bool overPrechodRegion(int region);
+
 	bool overDoSkladu(double hmotnostZas);
 	bool overDoPrekladiska(double hmotnostZas);
-	bool overPrechodRegion(int region);
+	void nalozZasDoSkladu(double hmotnostZas);
+	void nalozZasDoPrekladiska(double hmotnostZas);
 
 private:
 	void fromSubor(fstream* inSubor);

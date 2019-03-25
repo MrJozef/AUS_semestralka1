@@ -49,14 +49,25 @@ string Vozidlo::getSPZ()
 }
 
 bool Vozidlo::overDoSkladu(double hmotnostZas)
-{		//todo pridat aj zasobnik (teoreticky nie je treba lebo viem ze vsetky tieto zasielky doveziem do centr. skladu)
+{
 	return ((hmotnostZas + nalozDoSkladu_) < nosnost_);
 }
 
 bool Vozidlo::overDoPrekladiska(double hmotnostZas)
-{		//todo pridat aj zasobnik
+{
 	return ((hmotnostZas + nalozDoPrekladiska_) < nosnost_);
 }
+
+void Vozidlo::nalozZasDoSkladu(double hmotnostZas)
+{
+	nalozDoSkladu_ += hmotnostZas;
+}
+
+void Vozidlo::nalozZasDoPrekladiska(double hmotnostZas)
+{
+	nalozDoPrekladiska_ += hmotnostZas;
+}
+
 
 bool Vozidlo::overPrechodRegion(int region)
 {

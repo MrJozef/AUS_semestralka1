@@ -20,6 +20,9 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{fa78d25e-c7a5-465c-a589-3a8821ee044b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="structures\queue">
+      <UniqueIdentifier>{ff9d98a3-5ecf-4dae-b1c9-52099cfdc2b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\structures\structure.cpp">
@@ -94,6 +97,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\structures\queue\explicit_queue.h">
+      <Filter>structures\queue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\structures\queue\queue.h">
+      <Filter>structures\queue</Filter>
+    </ClInclude>
+    <ClInclude Include="ramecRozvrhu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

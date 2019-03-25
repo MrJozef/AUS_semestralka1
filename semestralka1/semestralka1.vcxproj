@@ -132,6 +132,8 @@
     <ClInclude Include="..\structures\list\array_list.h" />
     <ClInclude Include="..\structures\list\linked_list.h" />
     <ClInclude Include="..\structures\list\list.h" />
+    <ClInclude Include="..\structures\queue\explicit_queue.h" />
+    <ClInclude Include="..\structures\queue\queue.h" />
     <ClInclude Include="..\structures\structure.h" />
     <ClInclude Include="..\structures\structure_iterator.h" />
     <ClInclude Include="..\structures\vector\vector.h" />
@@ -139,6 +141,7 @@
     <ClInclude Include="datum.h" />
     <ClInclude Include="dron.h" />
     <ClInclude Include="prekladisko.h" />
+    <ClInclude Include="ramecRozvrhu.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="vozidlo.h" />
     <ClInclude Include="zasielka.h" />
