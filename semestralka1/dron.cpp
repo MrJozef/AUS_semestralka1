@@ -183,6 +183,12 @@ void Dron::dalsiaHodina()
 	}
 }
 
+void Dron::dalsiaNoc()
+{
+	nabitie_ = 100;
+	stav_ = volny;			//teoreticky vzdy uz budu volne
+}
+
 
 int Dron::casNabijania(int vzdialenost)
 {

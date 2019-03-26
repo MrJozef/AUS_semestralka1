@@ -9,6 +9,15 @@ Vozidlo::Vozidlo(string spz, int nosnost, double naklady, Datum * zaradenie, str
 	nakladyNaReg_ = naklady;
 	celkNaklady_ = 0;
 	trasa_ = trasa;
+	pocetReg_ = 0;
+	for (int i = 0; i < POCET_REGIONOV; i++)
+	{
+		if ((*trasa_)[i])
+		{
+			pocetReg_++;
+		}
+	}
+
 	nalozDoSkladu_ = 0;
 	nalozDoPrekladiska_ = 0;
 }
@@ -68,6 +77,14 @@ void Vozidlo::nalozZasDoPrekladiska(double hmotnostZas)
 	nalozDoPrekladiska_ += hmotnostZas;
 }
 
+void Vozidlo::dalsiaNoc()
+{
+	nalozDoSkladu_ = 0;
+	nalozDoPrekladiska_ = 0;
+
+	celkNaklady_ += 2 * nakladyNaReg_ * pocetReg_;
+}
+
 
 bool Vozidlo::overPrechodRegion(int region)
 {
@@ -85,8 +102,14 @@ void Vozidlo::fromSubor(fstream* inSubor)
 	*inSubor >> nalozDoSkladu_;
 	*inSubor >> nalozDoPrekladiska_;
 
+	pocetReg_ = 0;
+
 	for (int i = 0; i < POCET_REGIONOV; i++)
 	{
 		*inSubor >> (*trasa_)[i];
+		if ((*trasa_)[i])
+		{
+			pocetReg_++;
+		}
 	}
 }

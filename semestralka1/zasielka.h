@@ -95,8 +95,8 @@ inline void Zasielka::fromSubor(fstream* inSubor)
 inline string Zasielka::toString()
 {
 	return "Objednavka:\n  Datum odoslania: " + odoslanie_->toString() + "  Hmotnost: " + to_string(hmotnost_) + " kg\n  Region odosielatela: " +
-		to_string(regZac_) + "\t\t\tRegion odberatela: " +
-		to_string(regKon_) + "\n  Vzdialenost: " + to_string(regZacVzdial_) + " km\t\t\t\tVzdialenost: " + to_string(regKonVzdial_) + " km\n  " +
+		to_string((regZac_ + 1)) + "\t\t\tRegion odberatela: " +
+		to_string((regKon_ + 1)) + "\n  Vzdialenost: " + to_string(regZacVzdial_) + " km\t\t\t\tVzdialenost: " + to_string(regKonVzdial_) + " km\n  " +
 		toStringDovodZamietnutia(zamietnutie_);
 }
 

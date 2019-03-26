@@ -77,7 +77,7 @@ inline bool Datum::dalsiaHodina()
 	if (!menitelny_)
 		return false;
 
-	if (hodina_ == 21)
+	if (hodina_ == KONECNA_HOD_DNA)
 	{
 		den_++;
 		hodina_ = ZACIATOCNA_HOD_DNA;

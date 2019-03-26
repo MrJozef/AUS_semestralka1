@@ -103,9 +103,24 @@ string System::casToString()
 void System::dalsiaHodina()
 {
 	aktualnyCas_->dalsiaHodina();
-	for (int i = 0; i < POCET_REGIONOV; i++)
+	if(aktualnyCas_->dajHodinu() == 7)
 	{
-		(*listPrekladisk_)[i]->dalsiaHodina();
+		for (int i = 0; i < POCET_REGIONOV; i++)
+		{
+			(*listPrekladisk_)[i]->dalsiaNoc();
+		}
+
+		for (Vozidlo* voz : *listVozidiel_)
+		{
+			voz->dalsiaNoc();
+		}
+	}
+	else
+	{
+		for (int i = 0; i < POCET_REGIONOV; i++)
+		{
+			(*listPrekladisk_)[i]->dalsiaHodina();
+		}
 	}
 }
 

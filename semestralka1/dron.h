@@ -35,6 +35,7 @@ public:
 	int overCasVyzdvihnutia(int vzdialenost);//vrati cas vyzdvihnutia
 	int transportujZasielku(int vzdialenost);//vrati celkovy cas vyzdvihnutia zasielky + vratenie sa do prekladiska
 	void dalsiaHodina();
+	void dalsiaNoc();
 
 private:
 	int casNabijania(int vzdialenost);

@@ -19,6 +19,7 @@ public:
 	void vypisDrony();
 	void fromSubor(fstream* inSubor);
 	void dalsiaHodina();
+	void dalsiaNoc();
 
 	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
 	Dron* vyberDron(double hmotnostZasielky, int vzdialenost);
@@ -70,6 +71,14 @@ inline void Prekladisko::dalsiaHodina()
 	for(Dron* dron : *listDronov_)
 	{
 		dron->dalsiaHodina();
+	}
+}
+
+inline void Prekladisko::dalsiaNoc()
+{
+	for (Dron* dron : *listDronov_)
+	{
+		dron->dalsiaNoc();
 	}
 }
 
