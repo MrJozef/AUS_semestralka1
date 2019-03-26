@@ -37,7 +37,9 @@ Dron::~Dron()
 
 string Dron::toString()
 {
-	return "Dron: " + to_string(serioveCislo_) + "\t\t\t\t\tTyp: " + to_string(typ_) + "\n  Celkovo nalietanych hodin: " + to_string(nalietMinuty_) +
+	int nalietaneHodiny = nalietMinuty_ / 60;
+
+	return "Dron: " + to_string(serioveCislo_) + "\t\t\t\t\tTyp: " + to_string(typ_) + "\n  Celkovo nalietanych hodin: " + to_string(nalietaneHodiny) +
 		"\t\tCelkovo prepravenych zasielok: " + to_string(prepravZasielky_) + "\n\t\t\t\t\t\tZaradenie do evidencie: " +
 		zarDoEvidencie_->toString() + "  Aktualne: " + toStringStavDronu(stav_) + "\n";
 }
@@ -97,6 +99,7 @@ int Dron::transportujZasielku(int vzdialenost)
 	if (nabijanie > 0)
 	{
 		rozvrh_->push(new RamecRozvrhu(nabija, nabijanie));
+		nabitie_ += static_cast<int>(ceil(static_cast<double>(nabijanie) / dajDobuNabijaniaDronu(typ_) * 10));
 	}
 
 	int dobaLetu = dobaTrvaniaLetu(vzdialenost);
@@ -109,7 +112,7 @@ int Dron::transportujZasielku(int vzdialenost)
 
 	minutyZaneprazd_ += nabijanie;
 	minutyZaneprazd_ += dobaLetu;
-	nabitie_ -= (dobaLetu / dajDobuLetuDronu(typ_)) * 100;		//o kolko sa vybije dron pri lete
+	nabitie_ -= static_cast<int>(ceil(static_cast<double>(dobaLetu) / dajDobuLetuDronu(typ_) * 100));		//o kolko sa vybije dron pri lete
 
 	return nabijanie + dobaLetu;
 }
@@ -134,13 +137,9 @@ void Dron::dalsiaHodina()
 			if (rozvrh_->peek()->dajCinnost() == pracuje)
 			{
 				nalietMinuty_ += zostavajuceMinuty;
-				nabitie_ = nabitie_ - (zostavajuceMinuty / dajDobuNabijaniaDronu(typ_)) * 10;
 			}
-			else
-			{
-				nabitie_ = nabitie_ + (zostavajuceMinuty / dajDobuNabijaniaDronu(typ_)) * 10;
-			}
-			zostavajuceMinuty = 0;
+
+			zostavajuceMinuty = -1;
 		}
 		else
 		{
@@ -152,18 +151,13 @@ void Dron::dalsiaHodina()
 			{
 				nalietMinuty_ += trvanie;
 				prepravZasielky_++;
-				nabitie_ = nabitie_ - (trvanie / dajDobuNabijaniaDronu(typ_)) * 10;
-			}
-			else
-			{
-				nabitie_ = nabitie_ + (trvanie / dajDobuNabijaniaDronu(typ_)) * 10;
 			}
 
 			delete rozvrh_->pop();		//casovy ramec zanika, pretoze uz objednavku odniesol/nabil sa
 		}
 	}
 
-	if (zostavajuceMinuty > 0)
+	if (zostavajuceMinuty >= 0)
 	{
 		if (nabitie_ >= 100)
 		{
@@ -171,10 +165,9 @@ void Dron::dalsiaHodina()
 		}
 		else
 		{
-			nabitie_ = nabitie_ + (zostavajuceMinuty / dajDobuNabijaniaDronu(typ_)) * 10;
+			nabitie_ = nabitie_ + static_cast<int>(ceil((static_cast<double>(zostavajuceMinuty) / dajDobuNabijaniaDronu(typ_)) * 10));
 			if (nabitie_ > 100)			//vyuzijeme vsetok cas na nabijanie, moze sa vsak stat, ze cas je prilis dlhy a baterku by dobil na viac ako 100%
 			{
-				nabitie_ = 100;
 				stav_ = volny;
 			}
 			else
@@ -183,13 +176,18 @@ void Dron::dalsiaHodina()
 			}
 		}
 	}
+
+	if (nabitie_ > 100)			//korekcia kvoli zaokruhlovaniu
+	{
+		nabitie_ = 100;
+	}
 }
 
 
 int Dron::casNabijania(int vzdialenost)
 {
-	double akeNabitiePotrebujem = static_cast<double>(vzdialenost * 2) / dajRychlostDronu(typ_) * 100;
-	double dobaNabijania = (akeNabitiePotrebujem - nabitie_) / 10 * dajDobuNabijaniaDronu(typ_);
+	double akeNabitiePotrebujem = static_cast<double>(vzdialenost * 2) / static_cast<double>(dajRychlostDronu(typ_)) * 100;
+	double dobaNabijania = (akeNabitiePotrebujem - nabitie_) / 10 * static_cast<double>(dajDobuNabijaniaDronu(typ_));
 
 	if(dobaNabijania > 0.05)		//ak vyjde zaporna doba nabijania -> dron je nabity viac nez je potrebne na danu cestu
 	{
@@ -202,7 +200,7 @@ int Dron::casNabijania(int vzdialenost)
 int Dron::dobaTrvaniaLetu(int vzdialenost)
 {
 	double dlzkaCelejCesty = static_cast<double>(vzdialenost * 2);
-	double trvanieCesty = dlzkaCelejCesty / dajRychlostDronu(typ_) * 60;		//dlzka je v km, rychlost v km/hod, chceme vsak minuty
+	double trvanieCesty = dlzkaCelejCesty / static_cast<double>(dajRychlostDronu(typ_)) * 60;		//dlzka je v km, rychlost v km/hod, chceme vsak minuty
 
 	return static_cast<int>(ceil(trvanieCesty));
 }

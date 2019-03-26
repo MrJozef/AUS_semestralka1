@@ -138,8 +138,6 @@ inline Dron* Prekladisko::vyberDron(double hmotnostZasielky, int vzdialenost)
 		}
 	}
 
-	//ak som mal volny dron v Prekladisku, tak ho budem mat v premennej vybranyDron
-
 	if (vybranyDron == nullptr)
 	{
 		int minutyDoVyzdvihnutia = 10000000;
