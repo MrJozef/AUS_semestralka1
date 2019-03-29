@@ -79,10 +79,12 @@ void Vozidlo::nalozZasDoPrekladiska(double hmotnostZas)
 
 void Vozidlo::dalsiaNoc()
 {
+	if (nalozDoSkladu_ != 0 && nalozDoPrekladiska_ != 0)		//ak vozidlo do skladu ani do prekladiska nic nevezie tak tu noc vobec nevyjde na cestu
+	{
+		celkNaklady_ += 2 * nakladyNaReg_ * pocetReg_;
+	}
 	nalozDoSkladu_ = 0;
 	nalozDoPrekladiska_ = 0;
-
-	celkNaklady_ += 2 * nakladyNaReg_ * pocetReg_;
 }
 
 

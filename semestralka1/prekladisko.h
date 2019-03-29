@@ -22,7 +22,7 @@ public:
 	void dalsiaNoc();
 
 	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
-	Dron* vyberDron(double hmotnostZasielky, int vzdialenost);
+	Dron* vyberDron(double hmotnostZasielky, int vzdialenost, Transport trans);
 };
 
 inline Prekladisko::Prekladisko()
@@ -127,22 +127,36 @@ inline DovodZamietnutia Prekladisko::overPrevzatieZasielky(double hmotnostZasiel
 	return pom;
 }
 
-inline Dron* Prekladisko::vyberDron(double hmotnostZasielky, int vzdialenost)
+inline Dron* Prekladisko::vyberDron(double hmotnostZasielky, int vzdialenost, Transport trans)
 {
 	Dron* vybranyDron = nullptr;
 	int aktNosnost = 100000;
 	int aktNabitie = 0;
 
-
 	for (Dron* dron : *listDronov_)
 	{
-		if (dron->dajStav() == volny)
+		if (trans == odZakaznika)
 		{
-			if ((dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky) && (dajNosnostDronu(dron->dajTyp()) < aktNosnost) && (dron->dajNabitie() > aktNabitie) && (dron->doletis(vzdialenost)))
+			if (dron->dajStav() == volny)
 			{
-				vybranyDron = dron;
-				aktNosnost = dajNosnostDronu(dron->dajTyp());
-				aktNabitie = dron->dajNabitie();
+				if ((dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky) && (dajNosnostDronu(dron->dajTyp()) < aktNosnost) && (dron->dajNabitie() > aktNabitie) && (dron->doletis(vzdialenost)))
+				{
+					vybranyDron = dron;
+					aktNosnost = dajNosnostDronu(dron->dajTyp());
+					aktNabitie = dron->dajNabitie();
+				}
+			}
+		}
+		else
+		{
+			if (dron->dajBuduceMinutyZaneprazd() == 0)
+			{
+				if ((dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky) && (dajNosnostDronu(dron->dajTyp()) < aktNosnost) && (dron->dajBuduceNabitie() > aktNabitie) && (dron->doletis(vzdialenost)))
+				{
+					vybranyDron = dron;
+					aktNosnost = dajNosnostDronu(dron->dajTyp());
+					aktNabitie = dron->dajBuduceNabitie();
+				}
 			}
 		}
 	}
@@ -153,14 +167,29 @@ inline Dron* Prekladisko::vyberDron(double hmotnostZasielky, int vzdialenost)
 
 		for (Dron* dron : *listDronov_)
 		{
-			if (dron->doletis(vzdialenost) && dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky)
+			if (trans == odZakaznika)
 			{
-				if (dron->dajMinutyZaneprazd() < minutyDoVyzdvihnutia)
+				if (dron->doletis(vzdialenost) && dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky)
 				{
-					minutyDoVyzdvihnutia = dron->dajMinutyZaneprazd();
-					vybranyDron = dron;
+					if (dron->dajMinutyZaneprazd() < minutyDoVyzdvihnutia)
+					{
+						minutyDoVyzdvihnutia = dron->dajMinutyZaneprazd();
+						vybranyDron = dron;
+					}
 				}
 			}
+			else
+			{
+				if (dron->doletis(vzdialenost) && dajNosnostDronu(dron->dajTyp()) >= hmotnostZasielky)
+				{
+					if (dron->dajBuduceMinutyZaneprazd() < minutyDoVyzdvihnutia)
+					{
+						minutyDoVyzdvihnutia = dron->dajBuduceMinutyZaneprazd();
+						vybranyDron = dron;
+					}
+				}
+			}
+			
 		}
 	}
 

@@ -15,6 +15,10 @@ Dron::Dron(int cislo, int typ, Datum* zaradenie)
 	stav_ = volny;
 	rozvrh_ = new structures::ExplicitQueue<RamecRozvrhu*>();
 	minutyZaneprazd_ = 0;
+
+	buduciRozvrh_ = new structures::ExplicitQueue<RamecRozvrhu*>();
+	buduceNabitie_ = 100;
+	buduceMinutyZaneprazd_ = 0;
 }
 
 Dron::Dron(fstream* inSubor)
@@ -32,7 +36,13 @@ Dron::~Dron()
 	{
 		delete rozvrh_->pop();
 	}
+
+	while(rozvrh_->size() > 0)
+	{
+		delete buduciRozvrh_->pop();
+	}
 	delete rozvrh_;
+	delete buduciRozvrh_;
 }
 
 string Dron::toString()
@@ -59,6 +69,16 @@ void Dron::toSubor(fstream* outSubor)
 		pomRamec = rozvrh_->pop();
 		pomRamec->toSubor(outSubor);		//zapis do suboru
 		rozvrh_->push(pomRamec);			//pretoze nezatvarame program, musime vratit to co sme vybrali -> front nema prehliadku :(
+		pocetRamcov--;
+	}
+
+	*outSubor << buduceNabitie_ << "\n" << buduceMinutyZaneprazd_ << "\n" << buduciRozvrh_->size() << "\n";
+	pocetRamcov = buduciRozvrh_->size();
+	while (pocetRamcov > 0)
+	{
+		pomRamec = buduciRozvrh_->pop();
+		pomRamec->toSubor(outSubor);		//zapis do suboru
+		buduciRozvrh_->push(pomRamec);
 		pocetRamcov--;
 	}
 }
@@ -88,14 +108,18 @@ int Dron::dajMinutyZaneprazd()
 	return minutyZaneprazd_;
 }
 
-int Dron::overCasVyzdvihnutia(int vzdialenost)
+int Dron::overCasVyzdvihnutia(int vzdialenost, Transport trans)
 {
-	return minutyZaneprazd_ + casNabijania(vzdialenost) + (dobaTrvaniaLetu(vzdialenost) / 2);		//deleno 2 pretoze chceme vediet cas za ktory sa zasielka vyzdvihne
+	if (trans == odZakaznika)
+	{
+		return minutyZaneprazd_ + casNabijania(vzdialenost, nabitie_) + (dobaTrvaniaLetu(vzdialenost) / 2);		//deleno 2 pretoze chceme vediet cas za ktory sa zasielka vyzdvihne
+	}
+	return buduceMinutyZaneprazd_ + casNabijania(vzdialenost, buduceNabitie_) + (dobaTrvaniaLetu(vzdialenost) / 2);
 }
 
 int Dron::transportujZasielku(int vzdialenost)
 {
-	int nabijanie = casNabijania(vzdialenost);
+	int nabijanie = casNabijania(vzdialenost, nabitie_);
 	if (nabijanie > 0)
 	{
 		rozvrh_->push(new RamecRozvrhu(nabija, nabijanie));
@@ -117,6 +141,24 @@ int Dron::transportujZasielku(int vzdialenost)
 	return nabijanie + dobaLetu;
 }
 
+int Dron::pridajZasielkuNaPrepravu(int vzdialenost)
+{
+	int nabijanie = casNabijania(vzdialenost, buduceNabitie_);
+	if (nabijanie > 0)
+	{
+		buduciRozvrh_->push(new RamecRozvrhu(nabija, nabijanie));
+		buduceNabitie_ += static_cast<int>(ceil(static_cast<double>(nabijanie) / dajDobuNabijaniaDronu(typ_) * 10));
+	}
+
+	int dobaLetu = dobaTrvaniaLetu(vzdialenost);
+	buduciRozvrh_->push(new RamecRozvrhu(pracuje, dobaTrvaniaLetu(vzdialenost)));
+
+	buduceMinutyZaneprazd_ += nabijanie;
+	buduceMinutyZaneprazd_ += dobaLetu;
+	buduceNabitie_ -= static_cast<int>(ceil(static_cast<double>(dobaLetu) / dajDobuLetuDronu(typ_) * 100));
+
+	return nabijanie + dobaLetu;
+}
 
 void Dron::dalsiaHodina()
 {
@@ -186,14 +228,40 @@ void Dron::dalsiaHodina()
 void Dron::dalsiaNoc()
 {
 	nabitie_ = 100;
-	stav_ = volny;			//teoreticky vzdy uz budu volne
+
+	structures::ExplicitQueue<RamecRozvrhu*>* pomRozvrh = rozvrh_;
+	rozvrh_ = buduciRozvrh_;
+	buduciRozvrh_ = pomRozvrh;
+	pomRozvrh = nullptr;
+
+	if (rozvrh_->size() == 0)			//den nemoze zacat nabijanim
+	{
+		stav_ = volny;
+	}
+	else
+	{
+		stav_ = pracuje;
+	}
+
+	minutyZaneprazd_ = buduceMinutyZaneprazd_;
+	buduceNabitie_ = 100;
+	buduceMinutyZaneprazd_ = 0;
 }
 
+int Dron::dajBuduceMinutyZaneprazd()
+{
+	return buduceMinutyZaneprazd_;
+}
 
-int Dron::casNabijania(int vzdialenost)
+int Dron::dajBuduceNabitie()
+{
+	return buduceNabitie_;
+}
+
+int Dron::casNabijania(int vzdialenost, int nabitie)
 {
 	double akeNabitiePotrebujem = static_cast<double>(vzdialenost * 2) / static_cast<double>(dajRychlostDronu(typ_)) * 100;
-	double dobaNabijania = (akeNabitiePotrebujem - nabitie_) / 10 * static_cast<double>(dajDobuNabijaniaDronu(typ_));
+	double dobaNabijania = (akeNabitiePotrebujem - nabitie) / 10 * static_cast<double>(dajDobuNabijaniaDronu(typ_));
 
 	if(dobaNabijania > 0.05)		//ak vyjde zaporna doba nabijania -> dron je nabity viac nez je potrebne na danu cestu
 	{
@@ -216,6 +284,7 @@ void Dron::fromSubor(fstream* inSubor)
 	int pom;
 	zarDoEvidencie_ = new Datum(inSubor);
 	rozvrh_ = new structures::ExplicitQueue<RamecRozvrhu*>();
+	buduciRozvrh_ = new structures::ExplicitQueue<RamecRozvrhu*>();
 
 	*inSubor >> serioveCislo_;
 	*inSubor >> typ_;
@@ -231,5 +300,13 @@ void Dron::fromSubor(fstream* inSubor)
 	for (int i = 0; i < pom; i++)
 	{
 		rozvrh_->push(new RamecRozvrhu(inSubor));
+	}
+
+	*inSubor >> buduceNabitie_;
+	*inSubor >> buduceMinutyZaneprazd_;
+	*inSubor >> pom;
+	for (int i = 0; i < pom; i++)
+	{
+		buduciRozvrh_->push(new RamecRozvrhu(inSubor));
 	}
 }

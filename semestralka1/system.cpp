@@ -1,6 +1,6 @@
-#include <iostream>
 #include "../structures/heap_monitor.h"
 #include "system.h"
+#include <iostream>
 
 
 System::System()
@@ -164,6 +164,7 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 	Vozidlo* vozDoCentralSkladu = nullptr;
 	Vozidlo* vozDoPrekladiska = nullptr;
 	Dron* dronDoSkladu = nullptr;
+	Dron* dronZPrekladiska = nullptr;
 
 	if (aktualnyCas_->dajHodinu() < POSLEDNA_HOD_NA_VYZD_DRONOM)
 	{
@@ -217,8 +218,8 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 				//ci je zasielka naozaj prevzata do 20:00
 				if (stavObjednavky == nezamietnuta)
 				{
-					dronDoSkladu = (*listPrekladisk_)[regZac]->vyberDron(hmotnost, regZacVzdialenost);
-					int minutyDoVyzdvihnutia = dronDoSkladu->overCasVyzdvihnutia(regZacVzdialenost);
+					dronDoSkladu = (*listPrekladisk_)[regZac]->vyberDron(hmotnost, regZacVzdialenost, odZakaznika);
+					int minutyDoVyzdvihnutia = dronDoSkladu->overCasVyzdvihnutia(regZacVzdialenost, odZakaznika);
 
 
 					if (aktualnyCas_->dajHodinu() + (minutyDoVyzdvihnutia / 60) >= POSLEDNA_HOD_NA_VYZD_DRONOM)
@@ -235,6 +236,18 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 							{
 								stavObjednavky = zrusZakaznikom;
 							}
+						}
+					}
+
+					//ci dokazeme zasielku dorucit do 18:00 nasledujuceho dna
+					if (stavObjednavky == nezamietnuta)
+					{
+						dronZPrekladiska = (*listPrekladisk_)[regKon]->vyberDron(hmotnost, regKonVzdialenost, kOdberatelovi);
+						minutyDoVyzdvihnutia = dronZPrekladiska->overCasVyzdvihnutia(regKonVzdialenost, kOdberatelovi);
+
+						if (ZACIATOCNA_HOD_DNA + (minutyDoVyzdvihnutia / 60) >= POSLEDNA_HOD_NA_DORUCENIE)
+						{
+							stavObjednavky = plnePrekladisko;
 						}
 					}
 				}
@@ -257,9 +270,13 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 		{
 			vozDoPrekladiska->nalozZasDoPrekladiska(hmotnost);
 		}
-		
+
 		int celkCasTransportuDoSkladu = dronDoSkladu->transportujZasielku(regZacVzdialenost);		//prikaz na transport => na zaradenie zasielky do rozvrhu
-		cout << "celkCasTransportuDoSkladu: " + to_string(celkCasTransportuDoSkladu);
+		cout << "celkCasTransportuDoSkladu: " + to_string(celkCasTransportuDoSkladu) + "\n";
+
+		int celkCasTransZPrekladiska = dronZPrekladiska->pridajZasielkuNaPrepravu(regKonVzdialenost);		//prikaz na transport z prekladiska k odberatelovi tj. na druhy den
+		cout << "celkCasTransZPrekladiska " + to_string(celkCasTransZPrekladiska) << endl;
+		//pridat cas kedy bude dorucena koncovemu odberatelovi
 	}
 
 	pomZasielka->zamietni(stavObjednavky);

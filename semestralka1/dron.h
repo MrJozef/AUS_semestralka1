@@ -18,6 +18,10 @@ private:
 	structures::ExplicitQueue<RamecRozvrhu*>* rozvrh_;
 	int minutyZaneprazd_;
 
+	structures::ExplicitQueue<RamecRozvrhu*>* buduciRozvrh_;
+	int buduceNabitie_;
+	int buduceMinutyZaneprazd_;
+
 public:
 	Dron(int cislo, int typ, Datum* zaradenie);
 	Dron(fstream* inSubor);
@@ -32,13 +36,17 @@ public:
 	bool doletis(int vzdialenost);
 
 	int dajMinutyZaneprazd();
-	int overCasVyzdvihnutia(int vzdialenost);//vrati cas vyzdvihnutia
+	int overCasVyzdvihnutia(int vzdialenost, Transport trans);//vrati cas vyzdvihnutia
 	int transportujZasielku(int vzdialenost);//vrati celkovy cas vyzdvihnutia zasielky + vratenie sa do prekladiska
 	void dalsiaHodina();
 	void dalsiaNoc();
 
+	int dajBuduceMinutyZaneprazd();
+	int dajBuduceNabitie();
+	int pridajZasielkuNaPrepravu(int vzdialenost);
+
 private:
-	int casNabijania(int vzdialenost);
+	int casNabijania(int vzdialenost, int nabitie);
 	int dobaTrvaniaLetu(int vzdialenost);
 	void fromSubor(fstream* inSubor);
 };

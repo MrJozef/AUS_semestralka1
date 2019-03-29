@@ -11,6 +11,7 @@ const std::string CESTA_K_SUBORU = "data.txt";
 const int ZACIATOCNA_HOD_DNA = 7;
 const int KONECNA_HOD_DNA = 21;
 const int POSLEDNA_HOD_NA_VYZD_DRONOM = 20;
+const int POSLEDNA_HOD_NA_DORUCENIE = 18;
 
 const int POCET_REGIONOV = 25;
 const int REGION_ZILINA = 7;
@@ -115,7 +116,7 @@ enum DovodZamietnutia
 	mimoRadius,
 	velkaHmotnost,
 	vozNeuvezie,
-	plnePrekladisko,		//todo neskore implementovanie
+	plnePrekladisko,
 	zrusZakaznikom
 };
 
@@ -141,3 +142,9 @@ inline std::string toStringDovodZamietnutia(DovodZamietnutia x)
 		return "";
 	}
 }
+
+enum Transport		//hovori o tom ci hladame dron od zakaznika smerujuci do prekladiska alebo prehladavame drony na konci cesty k odberatelovi
+{
+	odZakaznika,
+	kOdberatelovi
+};
