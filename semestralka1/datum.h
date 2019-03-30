@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cmath>
 #include "../structures/heap_monitor.h"
 #include "const.h"
 
@@ -16,6 +16,7 @@ public:
 	Datum();
 	Datum(fstream* inSubor);
 	Datum(int den, int hodina);
+	Datum(Datum* datum, int minuty);
 	~Datum();
 
 	string toString();
@@ -46,6 +47,14 @@ inline Datum::Datum(int den, int hodina)
 {
 	den_ = den;
 	hodina_ = hodina;
+	menitelny_ = false;
+}
+
+///<summary>Tento konstruktor pripocita k zaciatku dna (teda k 7:00) dany pocet minut (zaokruhlene na hodiny nahor) a den + 1</summary>
+inline Datum::Datum(Datum* datum, int minuty)
+{
+	den_ = datum->dajDen() + 1;
+	hodina_ = static_cast<int>(ZACIATOCNA_HOD_DNA + ceil(static_cast<double>(minuty) / 60));
 	menitelny_ = false;
 }
 

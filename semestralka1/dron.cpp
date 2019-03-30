@@ -98,6 +98,11 @@ int Dron::dajNabitie()
 	return nabitie_;
 }
 
+int Dron::dajSerioveCislo()
+{
+	return serioveCislo_;
+}
+
 bool Dron::doletis(int vzdialenost)
 {
 	return static_cast<double>(dajRychlostDronu(typ_)) * (static_cast<double>(dajDobuLetuDronu(typ_)) / 60) >= 2 * vzdialenost;		//vzdialenost 2x lebo sa musi aj vratit
@@ -162,7 +167,6 @@ int Dron::pridajZasielkuNaPrepravu(int vzdialenost)
 
 void Dron::dalsiaHodina()
 {
-	// nalietMinuty_ prepravZasielky_ nabitie_ stav_ rozvrh_ minutyZaneprazd_;;;zostavajuceMinuty
 	int zostavajuceMinuty = 60;
 	int trvanie;
 
@@ -199,24 +203,23 @@ void Dron::dalsiaHodina()
 		}
 	}
 
-	if (zostavajuceMinuty >= 0)
+	if (rozvrh_->size() > 0)
 	{
-		if (nabitie_ >= 100)
+		stav_ = rozvrh_->peek()->dajCinnost();
+	}
+
+	if (zostavajuceMinuty > 0 && nabitie_ < 100)
+	{
+		nabitie_ = nabitie_ + static_cast<int>(ceil((static_cast<double>(zostavajuceMinuty) / dajDobuNabijaniaDronu(typ_)) * 10));
+		if (nabitie_ > 100)			//vyuzijeme vsetok cas na nabijanie, moze sa vsak stat, ze cas je prilis dlhy a baterku by dobil na viac ako 100%
 		{
 			stav_ = volny;
 		}
 		else
 		{
-			nabitie_ = nabitie_ + static_cast<int>(ceil((static_cast<double>(zostavajuceMinuty) / dajDobuNabijaniaDronu(typ_)) * 10));
-			if (nabitie_ > 100)			//vyuzijeme vsetok cas na nabijanie, moze sa vsak stat, ze cas je prilis dlhy a baterku by dobil na viac ako 100%
-			{
-				stav_ = volny;
-			}
-			else
-			{
-				stav_ = nabija;
-			}
+			stav_ = nabija;
 		}
+
 	}
 
 	if (nabitie_ > 100)			//korekcia kvoli zaokruhlovaniu
@@ -227,8 +230,6 @@ void Dron::dalsiaHodina()
 
 void Dron::dalsiaNoc()
 {
-	nabitie_ = 100;
-
 	structures::ExplicitQueue<RamecRozvrhu*>* pomRozvrh = rozvrh_;
 	rozvrh_ = buduciRozvrh_;
 	buduciRozvrh_ = pomRozvrh;
@@ -237,11 +238,13 @@ void Dron::dalsiaNoc()
 	if (rozvrh_->size() == 0)			//den nemoze zacat nabijanim
 	{
 		stav_ = volny;
+		nabitie_ = 100;
 	}
 	else
 	{
 		stav_ = pracuje;
-	}
+		nabitie_ = buduceNabitie_;		//uz bolo raz vypocitane kolko % baterky bude mat dron po tom, co roznese poslednu zasielku z predchadzajuceho dna
+	}									//a nove objednavky mozem zaradit do frontu az po vybaveni poslednej z predchadzajuceho dna
 
 	minutyZaneprazd_ = buduceMinutyZaneprazd_;
 	buduceNabitie_ = 100;

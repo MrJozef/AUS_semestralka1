@@ -114,12 +114,28 @@ void System::dalsiaHodina()
 		{
 			voz->dalsiaNoc();
 		}
+
+		for (Zasielka* zas : *listZasielok_)
+		{
+			if(zas->dajStavZasielky() == transportPrvaFaza)
+			{
+				zas->zmenStavZasielky(transportDruhaFaza);
+			}
+		}
 	}
 	else
 	{
 		for (int i = 0; i < POCET_REGIONOV; i++)
 		{
 			(*listPrekladisk_)[i]->dalsiaHodina();
+		}
+
+		for (Zasielka* zas : *listZasielok_)
+		{
+			if (zas->dajStavZasielky() == transportDruhaFaza && zas->dajCasDorucenia()->dajHodinu() == aktualnyCas_->dajHodinu())
+			{
+				zas->zmenStavZasielky(vybavena);
+			}
 		}
 	}
 }
@@ -136,7 +152,7 @@ void System::vypisVsetkyVozidla()
 	{
 		for (Vozidlo* voz : *listVozidiel_)
 		{
-			cout << voz->toString();
+			cout << voz->toString() << endl;
 		}
 	}
 }
@@ -148,9 +164,16 @@ void System::vypisDrony(int cisPrekladiska)
 
 void System::vypisVsetkyZasielky()
 {
-	for (Zasielka* zas : *listZasielok_)
+	if (listZasielok_->size() == 0)
 	{
-		cout << zas->toString() << "\n";
+		cout << "  -  Aktualne firma neeviduje ani jednu zasielku  -\n" << endl;
+	}
+	else
+	{
+		for (Zasielka* zas : *listZasielok_)
+		{
+			cout << zas->toString() << "\n";
+		}
 	}
 }
 
@@ -165,6 +188,8 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 	Vozidlo* vozDoPrekladiska = nullptr;
 	Dron* dronDoSkladu = nullptr;
 	Dron* dronZPrekladiska = nullptr;
+
+	int casTransZPrekladiska = 0;
 
 	if (aktualnyCas_->dajHodinu() < POSLEDNA_HOD_NA_VYZD_DRONOM)
 	{
@@ -243,9 +268,9 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 					if (stavObjednavky == nezamietnuta)
 					{
 						dronZPrekladiska = (*listPrekladisk_)[regKon]->vyberDron(hmotnost, regKonVzdialenost, kOdberatelovi);
-						minutyDoVyzdvihnutia = dronZPrekladiska->overCasVyzdvihnutia(regKonVzdialenost, kOdberatelovi);
+						casTransZPrekladiska = dronZPrekladiska->overCasVyzdvihnutia(regKonVzdialenost, kOdberatelovi);
 
-						if (ZACIATOCNA_HOD_DNA + (minutyDoVyzdvihnutia / 60) >= POSLEDNA_HOD_NA_DORUCENIE)
+						if (ZACIATOCNA_HOD_DNA + (casTransZPrekladiska / 60) >= POSLEDNA_HOD_NA_DORUCENIE)
 						{
 							stavObjednavky = plnePrekladisko;
 						}
@@ -271,12 +296,11 @@ void System::vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacV
 			vozDoPrekladiska->nalozZasDoPrekladiska(hmotnost);
 		}
 
-		int celkCasTransportuDoSkladu = dronDoSkladu->transportujZasielku(regZacVzdialenost);		//prikaz na transport => na zaradenie zasielky do rozvrhu
-		cout << "celkCasTransportuDoSkladu: " + to_string(celkCasTransportuDoSkladu) + "\n";
+		dronDoSkladu->transportujZasielku(regZacVzdialenost);		//prikaz na transport => na zaradenie zasielky do rozvrhu
 
-		int celkCasTransZPrekladiska = dronZPrekladiska->pridajZasielkuNaPrepravu(regKonVzdialenost);		//prikaz na transport z prekladiska k odberatelovi tj. na druhy den
-		cout << "celkCasTransZPrekladiska " + to_string(celkCasTransZPrekladiska) << endl;
-		//pridat cas kedy bude dorucena koncovemu odberatelovi
+		dronZPrekladiska->pridajZasielkuNaPrepravu(regKonVzdialenost);		//prikaz na transport z prekladiska k odberatelovi tj. na druhy den
+		pomZasielka->pridajCasDorucenia(new Datum(aktualnyCas_, casTransZPrekladiska));
+		pomZasielka->zmenStavZasielky(transportPrvaFaza);
 	}
 
 	pomZasielka->zamietni(stavObjednavky);
@@ -299,6 +323,11 @@ bool System::overSPZ(string spz)
 		}
 	}
 	return false;
+}
+
+bool System::overSerioveCislo(int serioveCislo, int region)
+{
+	return (*listPrekladisk_)[region]->overSerioveCislo(serioveCislo);
 }
 
 void System::pridajDron(int cisOkresu, int cis, int typ)

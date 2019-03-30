@@ -142,11 +142,21 @@ int main()
 
 			cout << "Zadajte seriove cislo dronu:" << endl;
 			cis = nacitajCeleKladneCislo();
-			cout << "Zadajte typ dronu:" << endl;
-			typ = nacitajCeleKladneCisMensieRovne(POCET_TYPOV_DRONOV, false);
+			
 
+			if (AoE->overSerioveCislo(cis, cisOkresu))
+			{
+				cout << "Zadajte typ dronu:" << endl;
+				typ = nacitajCeleKladneCisMensieRovne(POCET_TYPOV_DRONOV, false);
+				AoE->pridajDron(cisOkresu, cis, typ);
 
-			AoE->pridajDron(cisOkresu, cis, typ);
+			}
+			else
+			{
+				cout << "Chyba - taketo seriove cislo uz vo zvolenom prekladisku existuje!" << endl;
+				cin.ignore();
+			}
+			
 			zadavamEnter();
 			break;
 

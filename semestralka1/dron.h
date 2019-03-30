@@ -33,6 +33,7 @@ public:
 	int dajTyp();
 	StavDronu dajStav();
 	int dajNabitie();
+	int dajSerioveCislo();
 	bool doletis(int vzdialenost);
 
 	int dajMinutyZaneprazd();

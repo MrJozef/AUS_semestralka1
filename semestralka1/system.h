@@ -32,6 +32,7 @@ public:
 	void vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacVzdialenost, int regKonVzdialenost);
 	void pridajVozidlo(string spz, int nosnost, double naklady, structures::Array<bool>* trasaVoz);
 	bool overSPZ(string spz);
+	bool overSerioveCislo(int serioveCislo, int region);
 	void pridajDron(int cisOkresu, int cis, int typ);
 
 private:

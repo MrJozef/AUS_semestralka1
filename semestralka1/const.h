@@ -108,6 +108,13 @@ enum Region		//todo aktualne nepouzivane
 };
 
 //Objednavky
+enum StavZasielky
+{
+	zamietnuta,
+	transportPrvaFaza,			//do centralneho skladiska (1. den)
+	transportDruhaFaza,			//2. den
+	vybavena
+};
 
 enum DovodZamietnutia
 {

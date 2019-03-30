@@ -17,6 +17,7 @@ public:
 	void toSubor(fstream* outSubor);
 	void pridajDron(int cislo, int typ, Datum* zaradenie);
 	void vypisDrony();
+	bool overSerioveCislo(int serioveCislo);
 	void fromSubor(fstream* inSubor);
 	void dalsiaHodina();
 	void dalsiaNoc();
@@ -102,6 +103,18 @@ inline void Prekladisko::vypisDrony()
 			cout << dron->toString();
 		}
 	}
+}
+
+inline bool Prekladisko::overSerioveCislo(int serioveCislo)
+{
+	for (Dron* dron : *listDronov_)
+	{
+		if (dron->dajSerioveCislo() == serioveCislo)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 inline DovodZamietnutia Prekladisko::overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost)
