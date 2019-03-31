@@ -335,6 +335,29 @@ void System::pridajDron(int cisOkresu, int cis, int typ)
 	(*listPrekladisk_)[cisOkresu]->pridajDron(cis, typ, aktualnyCas_);
 }
 
+int System::spocitajPrepravZas()
+{
+	int pocet = 0;
+	for (Zasielka* zas : *listZasielok_)
+	{
+		if (zas->dajStavZasielky() == vybavena)
+		{
+			pocet++;
+		}
+	}
+	return pocet;
+}
+
+void System::vypisNalietaneHodiny()
+{
+	for (int i = 0; i < POCET_REGIONOV; i++)
+	{
+		cout << "\n  Prekladisko v regione " + to_string(i + 1) + ":" << endl;
+		(*listPrekladisk_)[i]->vypisNalietHodiny();
+	}
+	
+}
+
 bool System::nacitajAnoNie()
 {
 	char pismeno;

@@ -77,6 +77,8 @@ inline void Zasielka::toSubor(fstream* outSubor)
 inline void Zasielka::fromSubor(fstream* inSubor)
 {
 	int pom;
+	int hodina;
+	int menitelny;
 
 	odoslanie_ = new Datum(inSubor);
 
@@ -87,7 +89,12 @@ inline void Zasielka::fromSubor(fstream* inSubor)
 		*inSubor >> pom;
 		dorucenie_ = nullptr;
 	}
-	else { dorucenie_ = new Datum(inSubor); }
+	else
+	{
+		*inSubor >> hodina;
+		*inSubor >> menitelny;
+		dorucenie_ = new Datum(pom, hodina);
+	}
 
 	*inSubor >> hmotnost_;
 	*inSubor >> regZac_;
@@ -114,7 +121,7 @@ inline string Zasielka::toString()
 	{
 		if (stav_ == zamietnuta)
 		{
-			pom += toStringDovodZamietnutia(zamietnutie_);
+			pom += "  " + toStringDovodZamietnutia(zamietnutie_);
 		}
 	}
 

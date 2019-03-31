@@ -46,6 +46,8 @@ public:
 	int dajBuduceNabitie();
 	int pridajZasielkuNaPrepravu(int vzdialenost);
 
+	int dajNalietaneMin();
+
 private:
 	int casNabijania(int vzdialenost, int nabitie);
 	int dobaTrvaniaLetu(int vzdialenost);

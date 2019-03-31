@@ -12,6 +12,7 @@ int nacitajCeleKladneCislo();
 double nacitajKladneDouble();
 bool nacitajAN();
 int nacitajCeleKladneCisMensieRovne(int max, bool sNulou);
+void vypisStatistiky(System* firma);
 
 int main()
 {
@@ -49,12 +50,12 @@ int main()
 
 	while (pokracovat)
 	{
-		system("cls");				//todo  toto odstranit?
+		system("cls");
 		cout << "  ~~  1. semestralna praca - Jozef Kubik  ~~\n\n";
 		cout << "Aktualny cas v systeme: " + AoE->casToString() + "\n\n";
 		cout << "Menu:\n  1) Posun o hodinu vpred\n  2) Uloz aktualny stav" << endl;
 		cout << "  3) Pridaj vozidlo\n  4) Vypis vsetky vozidla\n  5) Pridaj dron\n  6) Vypis drony z prekladiska" << endl;
-		cout << "  7) Vytvor objednavku\n  8) Vypis vsetky zasielky" << endl;
+		cout << "  7) Vytvor objednavku\n  8) Vypis vsetky zasielky\n  9) Vypis statistiky" << endl;
 		cout << "  0) Koniec\n\n" << endl;
 
 		switch(nacitajCeleKladneCisMensieRovne(POCET_POLOZIEK_MENU, true))
@@ -203,6 +204,11 @@ int main()
 			cin.ignore();
 			zadavamEnter();
 			break;
+
+		case 9:
+			vypisStatistiky(AoE);
+			break;
+
 		case 0:
 		default:
 			pokracovat = false;
@@ -217,6 +223,36 @@ int main()
 	return 0;
 }
 
+void vypisStatistiky(System* firma)
+{
+	cout << "Moznosti:\n\n  1) Vyhladanie regionu s najvyssim poctom dorucenych zasielok\n  2) Vyhladanie regionu s najvacsim poctom odoslanych zasielok" << endl;
+	cout << "  3) Vypisanie zamietnutych zasielok z regionu\n  4) Vypisanie poctu zrusenych zasielok vo vsetkych regionoch" << endl;
+	cout << "  5) Vypisanie poctu dorucenych zasielok vo vsetkych regionoch\n  6) Vypisanie nalietanych hodin vo vsetkych regionoch" << endl;
+	cout << "  0) Navrat spat" << endl;
+
+	switch(nacitajCeleKladneCisMensieRovne(POCET_STATISTIK, true))
+	{
+	case 4:
+		
+		break;
+
+	case 5:
+		cout << "S radostou oznamujeme ze nasa firma pre Vas prepravila uz neuveritelnych " + to_string(firma->spocitajPrepravZas()) + " zasielok\nDakujeme za Vasu doveru :)" << endl;
+		cout << "\n* (napisane malym pismom) pocitaju sa iba zasielky, ktore uz boli dorucene odberatelovi" << endl;
+		break;
+
+	case 6:
+		firma->vypisNalietaneHodiny();
+		cout << endl;
+		break;
+
+	case 0:
+	default:
+		return;
+	}
+	cin.ignore();
+	zadavamEnter();
+}
 
 void zadavam() { cout << ">> "; }
 

@@ -5,7 +5,8 @@
 
 const int ASCII_CISLO_CISLICA = 48;			//rozdiel medzi cislicou v ascii (char) a cislom, ktore predstavuje (int)
 
-const int POCET_POLOZIEK_MENU = 8;
+const int POCET_POLOZIEK_MENU = 9;
+const int POCET_STATISTIK = 6;
 const std::string CESTA_K_SUBORU = "data.txt";
 
 const int ZACIATOCNA_HOD_DNA = 7;
@@ -102,10 +103,6 @@ inline std::string toStringStavDronu(StavDronu x)
 	}
 }
 
-enum Region		//todo aktualne nepouzivane
-{
-	MA, BA, TT, TN, NR, KN, CA, ZA, MT, PD, LV, NO, LM, BB, ZV, KA, LC, PP, RA, SL, SN, PO, KE, HE, MI
-};
 
 //Objednavky
 enum StavZasielky

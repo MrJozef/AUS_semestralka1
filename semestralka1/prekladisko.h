@@ -11,7 +11,7 @@ private:
 
 public:
 	Prekladisko();
-	Prekladisko(fstream* inSubor);//todo toto zatial nikde nepouzivam
+	Prekladisko(fstream* inSubor);
 	~Prekladisko();
 
 	void toSubor(fstream* outSubor);
@@ -21,6 +21,8 @@ public:
 	void fromSubor(fstream* inSubor);
 	void dalsiaHodina();
 	void dalsiaNoc();
+
+	void vypisNalietHodiny();
 
 	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
 	Dron* vyberDron(double hmotnostZasielky, int vzdialenost, Transport trans);
@@ -81,6 +83,26 @@ inline void Prekladisko::dalsiaNoc()
 	{
 		dron->dalsiaNoc();
 	}
+}
+
+inline void Prekladisko::vypisNalietHodiny()
+{
+	int dron1 = 0;
+	int dron2 = 0;
+
+	for (Dron* dron : *listDronov_)
+	{
+		if (dron->dajTyp() == 1)
+		{
+			dron1 += dron->dajNalietaneMin();
+		}
+		else
+		{
+			dron2 += dron->dajNalietaneMin();
+		}
+	}
+
+	cout << "    Dron 1. typu: " + to_string((static_cast<double>(dron1) / 60)) + "\n    Dron 2. typu: " + to_string(static_cast<double>(dron2) / 60);
 }
 
 inline void Prekladisko::pridajDron(int cislo, int typ, Datum* zaradenie)

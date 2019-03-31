@@ -35,6 +35,9 @@ public:
 	bool overSerioveCislo(int serioveCislo, int region);
 	void pridajDron(int cisOkresu, int cis, int typ);
 
+	int spocitajPrepravZas();
+	void vypisNalietaneHodiny();
+
 private:
 	void fromSubor(fstream* inSubor);
 	bool nacitajAnoNie();

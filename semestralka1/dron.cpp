@@ -165,6 +165,11 @@ int Dron::pridajZasielkuNaPrepravu(int vzdialenost)
 	return nabijanie + dobaLetu;
 }
 
+int Dron::dajNalietaneMin()
+{
+	return nalietMinuty_;
+}
+
 void Dron::dalsiaHodina()
 {
 	int zostavajuceMinuty = 60;
