@@ -358,6 +358,171 @@ void System::vypisNalietaneHodiny()
 	
 }
 
+void System::vypisZrusZasVsetReg(structures::Array<int>* casObd)
+{
+	Datum* pomDatum;
+	//bud sa pociatocny a koncovy den rovnaju a vtedy hodina zaciatku musi byt < ako hodina konca alebo je pociatocny den < ako den koncovy
+	if (((*casObd)[0] == (*casObd)[2] && (*casObd)[1] < (*casObd)[3]) || ((*casObd)[0] < (*casObd)[2]))
+	{
+		structures::Array<int>* poctyZrusObj = new structures::Array<int>(POCET_REGIONOV);
+
+		for (Zasielka* zas : *listZasielok_)
+		{
+			//ci bola zasielka zamietnuta po zaciatku obdobia ktore hladame, do konca obdobia, ktore hladame
+			if (zas->dajStavZasielky() == zamietnuta)
+			{
+				pomDatum = zas->dajDatumOdoslania();
+
+				if (pomDatum->dajDen() > (*casObd)[0] || (pomDatum->dajDen() == (*casObd)[0] && pomDatum->dajHodinu() >= (*casObd)[1]))
+				{
+					if (pomDatum->dajDen() < (*casObd)[2] || (pomDatum->dajDen() == (*casObd)[2] && pomDatum->dajHodinu() <= (*casObd)[3]))
+					{
+						(*poctyZrusObj)[zas->dajZaciatocnyRegion()] += 1;
+					}
+				}
+			}
+			 
+		}
+
+		cout << "Pocet zrusenych zasielok v: " << endl;
+		for (int i = 0; i < POCET_REGIONOV; i++)
+		{
+			cout << "  regione " + to_string(i+1) + ":\t" + to_string((*poctyZrusObj)[i]) << endl;
+		}
+
+		delete poctyZrusObj;
+	}
+	else
+	{
+		cout << "Chyba - Zle zadane casove obdobie!" << endl;
+	}
+	
+}
+
+void System::vypisZrusZasVDanomReg(structures::Array<int>* casObd, int region)
+{
+	bool nicNenajdene = true;
+	Datum* pomDatum;
+	if (((*casObd)[0] == (*casObd)[2] && (*casObd)[1] < (*casObd)[3]) || ((*casObd)[0] < (*casObd)[2]))
+	{
+		for (Zasielka* zas : *listZasielok_)
+		{
+			if (zas->dajZaciatocnyRegion() == region && zas->dajStavZasielky() == zamietnuta)
+			{
+				pomDatum = zas->dajDatumOdoslania();
+
+				if (pomDatum->dajDen() > (*casObd)[0] || (pomDatum->dajDen() == (*casObd)[0] && pomDatum->dajHodinu() >= (*casObd)[1]))
+				{
+					if (pomDatum->dajDen() < (*casObd)[2] || (pomDatum->dajDen() == (*casObd)[2] && pomDatum->dajHodinu() <= (*casObd)[3]))
+					{
+						cout << zas->toString();
+						nicNenajdene = false;
+					}
+				}
+			}
+		}
+
+		if (nicNenajdene)
+		{
+			cout << "Ziadne zasielky neboli v tomto casovom obdobi zrusene!" << endl;
+		}
+	}
+	else
+	{
+		cout << "Chyba - Zle zadane casove obdobie!" << endl;
+	}
+}
+
+void System::vypisRegionSNajPoslanymiZas(structures::Array<int>* casObd)
+{
+	if (((*casObd)[0] == (*casObd)[2] && (*casObd)[1] < (*casObd)[3]) || ((*casObd)[0] < (*casObd)[2]))
+	{
+		structures::Array<int>* poctyOdosZas = new structures::Array<int>(POCET_REGIONOV);
+		Datum * pomDatum;
+		for (Zasielka* zas : *listZasielok_)
+		{
+			if (zas->dajStavZasielky() != zamietnuta)
+			{
+				pomDatum = zas->dajDatumOdoslania();
+
+				if (pomDatum->dajDen() > (*casObd)[0] || (pomDatum->dajDen() == (*casObd)[0] && pomDatum->dajHodinu() >= (*casObd)[1]))
+				{
+					if (pomDatum->dajDen() < (*casObd)[2] || (pomDatum->dajDen() == (*casObd)[2] && pomDatum->dajHodinu() <= (*casObd)[3]))
+					{
+						(*poctyOdosZas)[zas->dajZaciatocnyRegion()] += 1;
+					}
+				}
+			}
+		}
+
+		int maximum = 0;
+		int maxRegion = 0;
+		for (int i = 0; i < POCET_REGIONOV; i++)
+		{
+			if ((*poctyOdosZas)[i] > maximum)
+			{
+				maximum = (*poctyOdosZas)[i];
+				maxRegion = i;
+			}
+		}
+
+		cout << "Region s najviac odoslanymi zasielkami: " << to_string(maxRegion + 1) << " - odoslanych zasielok: " << to_string(maximum) << endl;
+	}
+	else
+	{
+		cout << "Chyba - Zle zadane casove obdobie!" << endl;
+	}
+}
+
+void System::vypisRegionSNajDorucZas(structures::Array<int>* casObd)
+{
+	//zadany koniec cas. obdobia nemoze byt v buducnosti
+	if ((*casObd)[2] < aktualnyCas_->dajDen() || ((*casObd)[2] == aktualnyCas_->dajDen() && (*casObd)[3] <= aktualnyCas_->dajHodinu()))
+	{
+		if (((*casObd)[0] == (*casObd)[2] && (*casObd)[1] < (*casObd)[3]) || ((*casObd)[0] < (*casObd)[2]))
+		{
+			structures::Array<int>* poctyDorucZas = new structures::Array<int>(POCET_REGIONOV);
+			Datum * pomDatum;
+			for (Zasielka* zas : *listZasielok_)
+			{
+				if (zas->dajStavZasielky() == vybavena)
+				{
+					pomDatum = zas->dajCasDorucenia();
+
+					if (pomDatum->dajDen() > (*casObd)[0] || (pomDatum->dajDen() == (*casObd)[0] && pomDatum->dajHodinu() >= (*casObd)[1]))
+					{
+						if (pomDatum->dajDen() < (*casObd)[2] || (pomDatum->dajDen() == (*casObd)[2] && pomDatum->dajHodinu() <= (*casObd)[3]))
+						{
+							(*poctyDorucZas)[zas->dajKoncovyRegion()] += 1;
+						}
+					}
+				}
+			}
+
+			int maximum = 0;
+			int maxRegion = 0;
+			for (int i = 0; i < POCET_REGIONOV; i++)
+			{
+				if ((*poctyDorucZas)[i] > maximum)
+				{
+					maximum = (*poctyDorucZas)[i];
+					maxRegion = i;
+				}
+			}
+
+			cout << "Region do ktoreho bolo dorucenych najviac zasielok " << to_string(maxRegion + 1) << " - dorucenych zasielok: " << to_string(maximum) << endl;
+		}
+		else
+		{
+			cout << "Chyba - Zle zadane casove obdobie!" << endl;
+		}
+	}
+	else
+	{
+		cout << "Chyba - Zle zadane casove obdobie!" << endl;
+	}
+}
+
 bool System::nacitajAnoNie()
 {
 	char pismeno;

@@ -28,6 +28,10 @@ public:
 	StavZasielky dajStavZasielky();
 	void zmenStavZasielky(StavZasielky novyStav);
 
+	int dajZaciatocnyRegion();
+	int dajKoncovyRegion();
+	Datum* dajDatumOdoslania();
+
 private:
 	void fromSubor(fstream* inSubor);
 };
@@ -151,4 +155,19 @@ inline StavZasielky Zasielka::dajStavZasielky()
 inline void Zasielka::zmenStavZasielky(StavZasielky novyStav)
 {
 	stav_ = novyStav;
+}
+
+inline int Zasielka::dajZaciatocnyRegion()
+{
+	return static_cast<int>(regZac_);
+}
+
+inline int Zasielka::dajKoncovyRegion()
+{
+	return static_cast<int>(regKon_);
+}
+
+inline Datum* Zasielka::dajDatumOdoslania()
+{
+	return odoslanie_;
 }

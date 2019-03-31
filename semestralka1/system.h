@@ -37,6 +37,10 @@ public:
 
 	int spocitajPrepravZas();
 	void vypisNalietaneHodiny();
+	void vypisZrusZasVsetReg(structures::Array<int>* casObd);
+	void vypisZrusZasVDanomReg(structures::Array<int>* casObd, int region);
+	void vypisRegionSNajPoslanymiZas(structures::Array<int>* casObd);
+	void vypisRegionSNajDorucZas(structures::Array<int>* casObd);
 
 private:
 	void fromSubor(fstream* inSubor);

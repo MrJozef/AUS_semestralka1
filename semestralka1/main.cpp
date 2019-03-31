@@ -13,6 +13,7 @@ double nacitajKladneDouble();
 bool nacitajAN();
 int nacitajCeleKladneCisMensieRovne(int max, bool sNulou);
 void vypisStatistiky(System* firma);
+structures::Array<int>* nacitajCasoveObdobie();
 
 int main()
 {
@@ -232,8 +233,25 @@ void vypisStatistiky(System* firma)
 
 	switch(nacitajCeleKladneCisMensieRovne(POCET_STATISTIK, true))
 	{
+	case 1:
+		firma->vypisRegionSNajDorucZas(nacitajCasoveObdobie());
+		vypisPrekladiska();
+		break;
+
+	case 2:
+		firma->vypisRegionSNajPoslanymiZas(nacitajCasoveObdobie());
+		vypisPrekladiska();
+		break;
+
+	case 3:
+		vypisPrekladiska();
+		cout << "Zvolte region z ktoreho chcete vypisat zamietnute zasielky:" << endl;
+		firma->vypisZrusZasVDanomReg(nacitajCasoveObdobie(), (nacitajCeleKladneCisMensieRovne(POCET_REGIONOV, false) - 1));
+		break;
+
 	case 4:
-		
+		firma->vypisZrusZasVsetReg(nacitajCasoveObdobie());
+		vypisPrekladiska();
 		break;
 
 	case 5:
@@ -242,6 +260,7 @@ void vypisStatistiky(System* firma)
 		break;
 
 	case 6:
+		vypisPrekladiska();
 		firma->vypisNalietaneHodiny();
 		cout << endl;
 		break;
@@ -252,6 +271,23 @@ void vypisStatistiky(System* firma)
 	}
 	cin.ignore();
 	zadavamEnter();
+}
+
+structures::Array<int>* nacitajCasoveObdobie()
+{
+	structures::Array<int>* casObdobie = new structures::Array<int>(4);		//odDen, odHodina, doDen, doHodina => 4 prvky
+
+	cout << "Zadajte pociatocny den casoveho obdobia:" << endl;
+	(*casObdobie)[0] = nacitajCeleKladneCislo();
+	cout << "Zadajte pociatocnu hodinu" << endl;
+	(*casObdobie)[1] = nacitajCeleKladneCisMensieRovne(24, false);
+
+	cout << "Zadajte koncovy den casoveho obdobia:" << endl;
+	(*casObdobie)[2] = nacitajCeleKladneCislo();
+	cout << "Zadajte koncovu hodinu" << endl;
+	(*casObdobie)[3] = nacitajCeleKladneCisMensieRovne(24, false);
+
+	return casObdobie;
 }
 
 void zadavam() { cout << ">> "; }
