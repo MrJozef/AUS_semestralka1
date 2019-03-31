@@ -5,7 +5,6 @@
 #include "../ds_routines.h"
 
 
-//TODO vymenit tento LinkedList za svoj tohtorocny
 namespace structures
 {
 
@@ -209,7 +208,7 @@ namespace structures
 		List<T>(),
 		size_(0),
 		first_(nullptr),
-		last_(nullptr)
+		last_(nullptr)					//teoreticky nepotrebujem, ale niektore operacie potrebuju posledny prvok
 	{
 	}
 
@@ -254,7 +253,7 @@ namespace structures
 		if (this != &other)
 		{
 			clear();
-			for (T data : other)
+			for (T data : other)	//zlozitost n(for) * 1(add)
 			{
 				add(data);
 			}
@@ -303,7 +302,7 @@ namespace structures
 		}
 		else
 		{
-			DSRoutines::rangeCheckExcept(index, size_, "Index out of range");
+			DSRoutines::rangeCheckExcept(index, size_, "Index out of range in LinkedList");
 
 			LinkedListItem<T>* newItem = new LinkedListItem<T>(data);
 
@@ -341,7 +340,7 @@ namespace structures
 	template<typename T>
 	inline T LinkedList<T>::removeAt(const int index)
 	{
-		DSRoutines::rangeCheckExcept(0, size_, "Index out of range");
+		DSRoutines::rangeCheckExcept(0, size_, "Index out of range in LinkedList");
 		
 		LinkedListItem<T>* delItem;
 
@@ -377,7 +376,7 @@ namespace structures
 	}
 
 	template<typename T>
-	inline int LinkedList<T>::getIndexOf(const T & data)
+	inline int LinkedList<T>::getIndexOf(const T & data)		//for s [] urcite nepouzivat pretoze ma zlozitost n*n
 	{
 		LinkedListItem<T>* item = first_;
 		int index = 0;
@@ -430,7 +429,7 @@ namespace structures
 	template<typename T>
 	inline LinkedListItem<T>* LinkedList<T>::getItemAtIndex(int index) const
 	{
-		DSRoutines::rangeCheckExcept(0, size_, "Index out of range");
+		DSRoutines::rangeCheckExcept(0, size_, "Index out of range in LinkedList");
 		
 		LinkedListItem<T>* result = first_;
 		for (int i = 0; i < index; i++)

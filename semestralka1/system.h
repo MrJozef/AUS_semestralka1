@@ -27,7 +27,7 @@ public:
 	void dalsiaHodina();
 	void vypisVsetkyVozidla();
 	void vypisDrony(int cisPrekladiska);
-	void vypisVsetkyZasielky();//todo na odstranenie
+	void vypisVsetkyZasielky();
 
 	void vytvorZasielku(double hmotnost, int regZac, int regKon, int regZacVzdialenost, int regKonVzdialenost);
 	void pridajVozidlo(string spz, int nosnost, double naklady, structures::Array<bool>* trasaVoz);

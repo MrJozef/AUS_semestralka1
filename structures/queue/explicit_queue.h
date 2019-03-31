@@ -4,7 +4,6 @@
 #include "../list/linked_list.h"
 
 
-//TODO vymenit tento Explicit Queue za svoj tohtorocny
 namespace structures
 {
 	/// <summary> Explicitny front. </summary>

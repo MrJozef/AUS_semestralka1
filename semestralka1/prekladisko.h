@@ -102,7 +102,7 @@ inline void Prekladisko::vypisNalietHodiny()
 		}
 	}
 
-	cout << "    Dron 1. typu: " + to_string((static_cast<double>(dron1) / 60)) + "\n    Dron 2. typu: " + to_string(static_cast<double>(dron2) / 60);
+	cout << "    Drony 1. typu: " + to_string((static_cast<double>(dron1) / 60)) + "\n    Drony 2. typu: " + to_string(static_cast<double>(dron2) / 60);
 }
 
 inline void Prekladisko::pridajDron(int cislo, int typ, Datum* zaradenie)

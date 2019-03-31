@@ -37,7 +37,7 @@ Dron::~Dron()
 		delete rozvrh_->pop();
 	}
 
-	while(rozvrh_->size() > 0)
+	while(buduciRozvrh_->size() > 0)
 	{
 		delete buduciRozvrh_->pop();
 	}

@@ -355,7 +355,6 @@ void System::vypisNalietaneHodiny()
 		cout << "\n  Prekladisko v regione " + to_string(i + 1) + ":" << endl;
 		(*listPrekladisk_)[i]->vypisNalietHodiny();
 	}
-	
 }
 
 void System::vypisZrusZasVsetReg(structures::Array<int>* casObd)
@@ -381,7 +380,6 @@ void System::vypisZrusZasVsetReg(structures::Array<int>* casObd)
 					}
 				}
 			}
-			 
 		}
 
 		cout << "Pocet zrusenych zasielok v: " << endl;
@@ -396,7 +394,8 @@ void System::vypisZrusZasVsetReg(structures::Array<int>* casObd)
 	{
 		cout << "Chyba - Zle zadane casove obdobie!" << endl;
 	}
-	
+	pomDatum = nullptr;
+	delete casObd;
 }
 
 void System::vypisZrusZasVDanomReg(structures::Array<int>* casObd, int region)
@@ -415,7 +414,7 @@ void System::vypisZrusZasVDanomReg(structures::Array<int>* casObd, int region)
 				{
 					if (pomDatum->dajDen() < (*casObd)[2] || (pomDatum->dajDen() == (*casObd)[2] && pomDatum->dajHodinu() <= (*casObd)[3]))
 					{
-						cout << zas->toString();
+						cout << zas->toString() << endl;
 						nicNenajdene = false;
 					}
 				}
@@ -431,6 +430,8 @@ void System::vypisZrusZasVDanomReg(structures::Array<int>* casObd, int region)
 	{
 		cout << "Chyba - Zle zadane casove obdobie!" << endl;
 	}
+	pomDatum = nullptr;
+	delete casObd;
 }
 
 void System::vypisRegionSNajPoslanymiZas(structures::Array<int>* casObd)
@@ -467,11 +468,14 @@ void System::vypisRegionSNajPoslanymiZas(structures::Array<int>* casObd)
 		}
 
 		cout << "Region s najviac odoslanymi zasielkami: " << to_string(maxRegion + 1) << " - odoslanych zasielok: " << to_string(maximum) << endl;
+		delete poctyOdosZas;
+		pomDatum = nullptr;
 	}
 	else
 	{
 		cout << "Chyba - Zle zadane casove obdobie!" << endl;
 	}
+	delete casObd;
 }
 
 void System::vypisRegionSNajDorucZas(structures::Array<int>* casObd)
@@ -511,6 +515,8 @@ void System::vypisRegionSNajDorucZas(structures::Array<int>* casObd)
 			}
 
 			cout << "Region do ktoreho bolo dorucenych najviac zasielok " << to_string(maxRegion + 1) << " - dorucenych zasielok: " << to_string(maximum) << endl;
+			delete poctyDorucZas;
+			pomDatum = nullptr;
 		}
 		else
 		{
@@ -521,6 +527,8 @@ void System::vypisRegionSNajDorucZas(structures::Array<int>* casObd)
 	{
 		cout << "Chyba - Zle zadane casove obdobie!" << endl;
 	}
+
+	delete casObd;
 }
 
 bool System::nacitajAnoNie()
