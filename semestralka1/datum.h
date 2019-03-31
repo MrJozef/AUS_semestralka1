@@ -10,6 +10,7 @@ class Datum
 private:
 	int den_;
 	int hodina_;
+	///<summary>Môem pouíva funkciu dalsiaHodina?</summary>
 	bool menitelny_;
 
 public:
@@ -20,7 +21,9 @@ public:
 	~Datum();
 
 	string toString();
+	///<summary>Umoòuje uloenie objektu do súboru</summary>
 	void toSubor(fstream* outSubor);
+	///<summary>Pridá hodinu k aktuálnemu èasu</summary>
 	bool dalsiaHodina();
 	void fromSubor(fstream* inSubor);
 

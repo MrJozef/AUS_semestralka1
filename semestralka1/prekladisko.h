@@ -10,21 +10,31 @@ private:
 	structures::LinkedList<Dron*>* listDronov_;
 
 public:
+	///<summary>Konštruktor pri vytváraní v programe</summary>
 	Prekladisko();
+	///<summary>Konštruktor pre naèítavanie zo súboru</summary>
 	Prekladisko(fstream* inSubor);
 	~Prekladisko();
-
+	///<summary>Umoòuje uloenie objektu do súboru</summary>
 	void toSubor(fstream* outSubor);
+
+	///<summary>Pridá dron do prekladiska</summary>
 	void pridajDron(int cislo, int typ, Datum* zaradenie);
 	void vypisDrony();
+	///<summary>Je u sériové èíslo pouité v prekladisku?</summary>
 	bool overSerioveCislo(int serioveCislo);
+	///<summary>Nacitanie zo suboru, volana konstruktorom</summary>
 	void fromSubor(fstream* inSubor);
+	///<summary>Aktualizacia všetkıch dronov</summary>
 	void dalsiaHodina();
+	///<summary>Aktualizacia všetkıch dronov pre noc</summary>
 	void dalsiaNoc();
-
+	///<summary>Vypíše nalietané hodiny pre kadı typ samostatne</summary>
 	void vypisNalietHodiny();
 
+	///<summary>Overím, èi mám dron v prekladisku ktorı dokáe odtransportova zásielku, ak nie vráti zamietnutie</summary>
 	DovodZamietnutia overPrevzatieZasielky(double hmotnostZasielky, int vzdialenost);
+	///<summary>Vráti pointer na dron, ktorı zásielku dokáe najrıchlejšie transportova</summary>
 	Dron* vyberDron(double hmotnostZasielky, int vzdialenost, Transport trans);
 };
 

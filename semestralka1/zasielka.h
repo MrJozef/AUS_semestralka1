@@ -6,26 +6,38 @@ class Zasielka
 {
 private:
 	double hmotnost_;
+	///<summary>Odkia¾ smeruje zásielka</summary>
 	short regZac_;
+	///<summary>Kam smeruje zásielka</summary>
 	short regKon_;
+	///<summary>km od poèiatoèného prekladiska</summary>
 	int regZacVzdial_;
+	///<summary>km od koncového prekladiska</summary>
 	int regKonVzdial_;
 	Datum* odoslanie_;
 	Datum* dorucenie_;
+	///<summary>Prepravuje sa zásielka, je už vybavená...?</summary>
 	StavZasielky stav_;
+	///<summary>Dôvod zamietnutia</summary>
 	DovodZamietnutia zamietnutie_;
 
 public:
+	///<summary>Konštruktor pri vytváraní v programe</summary>
 	Zasielka(double hmotnost, short regZac, short regKon, int regZacVzdialenost, int regKonVzdialenost, Datum* datOdoslania);
+	///<summary>Konštruktor pre naèítavanie zo súboru</summary>
 	Zasielka(fstream* inSubor);
 	~Zasielka();
 
+	///<summary>Umožòuje uloženie objektu do súboru</summary>
 	void toSubor(fstream* outSubor);
 	string toString();
+	///<summary>Zmení dôvod zamietnutia</summary>
 	void zamietni(DovodZamietnutia dovod);
+	///<summary>Èas doruèenia nastaví na daný èas</summary>
 	void pridajCasDorucenia(Datum* casDorucenia);
 	Datum* dajCasDorucenia();
 	StavZasielky dajStavZasielky();
+	///<summary>Zmení stav zásielky</summary>
 	void zmenStavZasielky(StavZasielky novyStav);
 
 	int dajZaciatocnyRegion();
@@ -33,6 +45,7 @@ public:
 	Datum* dajDatumOdoslania();
 
 private:
+	///<summary>Metódu používa konštruktor pri naèítavaní zo súboru</summary>
 	void fromSubor(fstream* inSubor);
 };
 

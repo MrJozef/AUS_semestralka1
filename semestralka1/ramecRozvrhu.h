@@ -5,16 +5,22 @@
 class RamecRozvrhu
 {
 private:
+	///<summary>nabíja sa / pracuje</summary>
 	StavDronu cinnost_;
 	int casVykonavania_;
 
 public:
+	///<summary>Konštruktor pri vytváraní v programe</summary>
 	RamecRozvrhu(StavDronu co, int akoDlho);
+	///<summary>Konštruktor pre naèítavanie zo súboru</summary>
 	RamecRozvrhu(fstream* inSubor);
 	~RamecRozvrhu();
+	///<summary>Umožòuje uloženie objektu do súboru</summary>
 	void toSubor(fstream* outSubor);
+	///<summary>Naèítanie zo suboru, volana konstruktorom</summary>
 	void fromSubor(fstream* inSubor);
 
+	///<summary>Odpoèítanie daného poètu minút z dåžky trvania èinnosti</summary>
 	int aktualizuj(int prejdenyCas);
 	int dajDobuTrvania();
 	StavDronu dajCinnost();
